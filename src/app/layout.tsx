@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Typhoon Research - AI-Powered Deep Research Tool",
+  title: "Typhoon Deep Research",
   description: "An advanced AI-powered research tool that helps you conduct deep, comprehensive research on any topic.",
 };
 

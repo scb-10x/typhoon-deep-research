@@ -1,6 +1,6 @@
-# Typhoon Research - AI-Powered Deep Research Tool
+# Typhoon Deep Research
 
-Typhoon Research is a modern, production-grade Next.js application that leverages AI to conduct comprehensive research on any topic. The application follows a structured research process:
+Typhoon Deep Research is a modern, production-grade Next.js application that leverages AI to conduct comprehensive research on any topic. The application follows a structured research process:
 
 1. **User Query**: Users submit their research topic or question.
 2. **Follow-up Questions**: The AI asks clarifying questions to better understand the research needs.

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { generateText } from 'ai';
-import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
 
 import { languagePrompt, systemPrompt } from '@/lib/prompt';
 import { trimPrompt } from '@/lib/ai/providers';
+import { typhoon } from '@/lib/ai/typhoon-client';
 
 // Define the request schema
 const requestSchema = z.object({
@@ -28,15 +28,16 @@ export async function POST(request: Request) {
       `<query>${prompt}</query>`,
       `<learnings>\n${formattedLearnings}\n</learnings>`,
       `The report should be well-structured with sections, include all relevant information from the learnings, and provide a conclusion that directly addresses the original query.`,
-      `IMPORTANT: Format your response as a clean markdown document. Start directly with a # heading for the title. Do NOT include any preamble text like "Here is the report" or "Below is a comprehensive research report". Just start with the markdown content.`,
+      `IMPORTANT: Format your response as a clean markdown document. Start directly with a # heading for the title that includes "Typhoon Deep Research". Do NOT include any preamble text like "Here is the report" or "Below is a comprehensive research report". Just start with the markdown content.`,
       languagePrompt(language),
     ].join('\n\n');
 
-    // Use OpenAI on the server side with await instead of streaming
+    // Use Typhoon API instead of OpenAI
     const result = await generateText({
-      model: openai(process.env.AI_MODEL || 'gpt-4-turbo'),
+      model: typhoon(process.env.AI_MODEL || 'gpt-4-turbo'),
       system: systemPrompt(),
       prompt: trimPrompt(reportPrompt),
+      maxTokens: 4096,
     });
 
     // Clean up any potential preamble text
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
     
     // Ensure the report starts with a markdown heading
     if (!cleanReport.trim().startsWith('#')) {
-      cleanReport = `# Research Report\n\n${cleanReport}`;
+      cleanReport = `# Typhoon Deep Research\n\n${cleanReport}`;
     }
     
     // For the report, we don't need to parse JSON, just return the text

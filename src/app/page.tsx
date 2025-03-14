@@ -257,7 +257,7 @@ ${Object.entries(responses)
             </div>
             
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 relative inline-block">
-              Deep Research Assistant
+              Typhoon Deep Research
               {/* Decorative Dots */}
               <span className="absolute -top-4 -right-4 w-3 h-3 bg-indigo-500 rounded-full opacity-50"></span>
               <span className="absolute -bottom-4 -left-4 w-3 h-3 bg-purple-500 rounded-full opacity-50"></span>

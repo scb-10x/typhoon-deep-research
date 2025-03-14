@@ -16,7 +16,7 @@ export function generateMockReport(prompt: string, learnings: string[], language
   const languageName = languageCodeToName[language] || language;
   
   // Create a title based on the prompt
-  const title = `# Research Report: ${prompt.split('.')[0]}`;
+  const title = `# Typhoon Deep Research: ${prompt.split('.')[0]}`;
   
   // Create an introduction
   const introduction = `

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { generateText } from 'ai';
-import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
 import zodToJsonSchema from 'zod-to-json-schema';
 
 import { languagePrompt, systemPrompt } from '@/lib/prompt';
+import { typhoon } from '@/lib/ai/typhoon-client';
 
 // Define the request schema
 const requestSchema = z.object({
@@ -35,11 +35,12 @@ export async function POST(request: Request) {
       languagePrompt(language),
     ].join('\n\n');
 
-    // Use OpenAI on the server side with await instead of streaming
+    // Use Typhoon API instead of OpenAI
     const result = await generateText({
-      model: openai(process.env.AI_MODEL || 'gpt-4-turbo'),
+      model: typhoon(process.env.AI_MODEL || 'gpt-4-turbo'),
       system: systemPrompt(),
       prompt,
+      maxTokens: 4096,
     });
 
     // Parse the JSON response
