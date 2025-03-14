@@ -6,6 +6,7 @@ import zodToJsonSchema from 'zod-to-json-schema';
 import { languagePrompt, systemPrompt } from '@/lib/prompt';
 import { trimPrompt } from '@/lib/ai/providers';
 import { typhoon } from '@/lib/ai/typhoon-client';
+import { extractResultFromThinking, safeJsonParse } from '@/utils/ai-response';
 
 // Define the request schema
 const requestSchema = z.object({
@@ -74,14 +75,17 @@ export async function POST(request: Request) {
       maxTokens: 4096,
     });
 
-    // Parse the JSON response
+    // Extract the result from thinking if present
+    const cleanResult = extractResultFromThinking(result.text);
+
+    // Parse the JSON response with retry capability
     try {
-      const jsonResponse = JSON.parse(result.text);
+      const jsonResponse = await safeJsonParse(cleanResult, jsonSchema, 2);
       return NextResponse.json(jsonResponse);
     } catch (parseError) {
-      console.error('Failed to parse JSON response:', parseError);
+      console.error('Failed to parse JSON response after retries:', parseError);
       return NextResponse.json(
-        { error: 'Failed to parse AI response', details: result.text },
+        { error: 'Failed to parse AI response', details: cleanResult },
         { status: 500 }
       );
     }

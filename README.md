@@ -14,11 +14,12 @@ Typhoon Deep Research is a modern, production-grade Next.js application that lev
 - Interactive research progress visualization
 - Markdown-based research reports with download capability
 - Dark mode support
+- Compatible with OpenAI and Typhoon AI endpoints
 
 ## Tech Stack
 
 - **Frontend**: Next.js, React, TypeScript, Tailwind CSS
-- **AI Integration**: OpenAI API, Vercel AI SDK
+- **AI Integration**: Typhoon AI API (OpenAI-compatible), Vercel AI SDK
 - **Styling**: Tailwind CSS, Heroicons
 - **Content Rendering**: React Markdown
 
@@ -44,10 +45,17 @@ Typhoon Deep Research is a modern, production-grade Next.js application that lev
    yarn install
    ```
 
-3. Create a `.env.local` file in the root directory with your OpenAI API key:
+3. Create a `.env.local` file in the root directory with your API keys:
    ```
+   # OpenAI API Key - Get one at https://platform.openai.com/api-keys
    OPENAI_API_KEY=your_openai_api_key_here
-   NEXT_PUBLIC_AI_MODEL=gpt-4-turbo
+   
+   # AI Model configuration
+   AI_MODEL=gpt-4-turbo
+   AI_REASONING_MODEL=gpt-4-turbo-preview
+   
+   # Tavily API Key for web search
+   TAVILY_API_KEY=your_tavily_api_key_here
    ```
 
 4. Start the development server:
@@ -58,6 +66,13 @@ Typhoon Deep Research is a modern, production-grade Next.js application that lev
    ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+## Environment Variables
+
+- `OPENAI_API_KEY`: Your API key for OpenAI or Typhoon AI
+- `AI_MODEL`: The default AI model to use for general tasks
+- `AI_REASONING_MODEL`: The AI model to use for reasoning-intensive tasks like report generation and query formulation
+- `TAVILY_API_KEY`: Your API key for Tavily web search
 
 ## Project Structure
 

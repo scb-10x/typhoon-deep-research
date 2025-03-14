@@ -51,29 +51,8 @@ export default function HomePage() {
           setResearchLearnings(lastStep.learnings);
         }
         
-        // Start report generation with a slight delay to show completion
-        setTimeout(() => {
-          setActiveStage('generating-report');
-          setCompletedStages(prev => [...prev, 'researching']);
-          
-          // Auto-expand the research section to show report generation progress
-          setExpandedSections(prev => ({
-            ...prev,
-            researching: true
-          }));
-          
-          // Start progress animation for report generation
-          setReportProgress(0);
-          const interval = setInterval(() => {
-            setReportProgress(prev => {
-              if (prev >= 95) {
-                clearInterval(interval);
-                return 95;
-              }
-              return prev + 5;
-            });
-          }, 100);
-        }, 1000);
+        // We'll no longer set the generating-report stage here
+        // as it will be set right before writeFinalReport is called
       }
     }
   }, [researchSteps]);
@@ -160,6 +139,28 @@ ${Object.entries(responses)
       
       // Store the learnings
       setResearchLearnings(result.learnings);
+      
+      // Set the stage to generating-report right before calling writeFinalReport
+      setActiveStage('generating-report');
+      setCompletedStages(prev => [...prev, 'researching']);
+      
+      // Start progress animation for report generation
+      setReportProgress(0);
+      const interval = setInterval(() => {
+        setReportProgress(prev => {
+          if (prev >= 95) {
+            clearInterval(interval);
+            return 95;
+          }
+          return prev + 5;
+        });
+      }, 100);
+      
+      // Auto-expand the research section to show report generation progress
+      setExpandedSections(prev => ({
+        ...prev,
+        researching: true
+      }));
       
       // Generate the final report with await
       const reportResponse = await writeFinalReport({

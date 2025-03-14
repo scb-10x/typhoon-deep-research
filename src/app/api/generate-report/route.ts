@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { languagePrompt, systemPrompt } from '@/lib/prompt';
 import { trimPrompt } from '@/lib/ai/providers';
 import { typhoon } from '@/lib/ai/typhoon-client';
+import { extractResultFromThinking } from '@/utils/ai-response';
 
 // Define the request schema
 const requestSchema = z.object({
@@ -34,14 +35,14 @@ export async function POST(request: Request) {
 
     // Use Typhoon API instead of OpenAI
     const result = await generateText({
-      model: typhoon(process.env.AI_MODEL || 'gpt-4-turbo'),
+      model: typhoon(process.env.AI_REASONING_MODEL || process.env.AI_MODEL || 'gpt-4-turbo'),
       system: systemPrompt(),
       prompt: trimPrompt(reportPrompt),
       maxTokens: 4096,
     });
 
-    // Clean up any potential preamble text
-    let cleanReport = result.text;
+    // Extract the result from thinking if present
+    let cleanReport = extractResultFromThinking(result.text);
     
     // Remove common preamble patterns
     const preamblePatterns = [
