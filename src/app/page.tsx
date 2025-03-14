@@ -238,10 +238,11 @@ ${Object.entries(responses)
           <div className="flex items-center justify-center">
             <div className="flex items-center">
               <BeakerIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
-              <div className="flex items-center">
+              <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80 transition-opacity">
                 <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
                 <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2">Research</span>
-              </div>
+                <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 rounded-full">experiment version</span>
+              </a>
             </div>
           </div>
         </div>
@@ -579,7 +580,7 @@ ${Object.entries(responses)
       <footer className="w-full bg-white dark:bg-gray-900 py-6 border-t border-gray-200 dark:border-gray-800 flex-none mt-auto">
         <div className="container mx-auto px-6 text-center">
           <p className="text-gray-600 dark:text-gray-400">
-            Powered by <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon Research</span>
+            Powered by <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600 hover:underline">Typhoon Research</a>
           </p>
         </div>
       </footer>

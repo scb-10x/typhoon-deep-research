@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { writeFinalReport } from '@/lib/deep-research';
 import { mockWriteFinalReport } from '@/lib/mock-report';
 import ResearchReport from '@/components/ResearchReport';
+import { BeakerIcon } from '@heroicons/react/24/solid';
 
 export default function TestReportPage() {
   const [report, setReport] = useState('');
@@ -61,6 +62,22 @@ export default function TestReportPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 p-8">
       <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <header className="w-full bg-white dark:bg-gray-900 shadow-md backdrop-blur-lg bg-opacity-80 dark:bg-opacity-80 sticky top-0 z-10 flex-none">
+          <div className="container mx-auto px-6 py-5">
+            <div className="flex items-center justify-center">
+              <div className="flex items-center">
+                <BeakerIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
+                <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80 transition-opacity">
+                  <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
+                  <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2">Research</span>
+                  <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 rounded-full">experiment version</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+        
         <h1 className="text-3xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
           Test Report Generation
         </h1>
