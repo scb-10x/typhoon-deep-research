@@ -28,8 +28,36 @@ export async function POST(request: Request) {
       `Based on the following research query and learnings, write a comprehensive research report. The report should synthesize the learnings into a coherent narrative, highlighting key insights, patterns, and conclusions.`,
       `<query>${prompt}</query>`,
       `<learnings>\n${formattedLearnings}\n</learnings>`,
-      `The report should be well-structured with sections, include all relevant information from the learnings, and provide a conclusion that directly addresses the original query.`,
-      `IMPORTANT: Format your response as a clean markdown document. Start directly with a # heading for the title that includes "Typhoon Deep Research". Do NOT include any preamble text like "Here is the report" or "Below is a comprehensive research report". Just start with the markdown content.`,
+      
+      `IMPORTANT CONSTRAINTS AND GUIDELINES:`,
+      
+      `1. USER ALIGNMENT (HIGHEST PRIORITY): Ensure the report directly addresses the user's original query. Focus on providing practical, actionable insights that are relevant to the user's needs. Organize information in a way that prioritizes what would be most valuable to someone asking this specific question. Begin with a brief prelude that helps orient the user to the topic and sets expectations for what they'll learn.`,
+      
+      `2. FACTUAL ACCURACY: Never make up facts or information. Only use information that is explicitly provided in the learnings. If you're uncertain about something, acknowledge the limitation rather than inventing details.`,
+      
+      `3. CITATIONS: Use numbered citations like "[1]" to reference specific learnings. Each citation number should correspond to the index of the source in the learnings list. DO NOT include URLs in the report text - only use the citation numbers. Include citations whenever you present specific facts, statistics, or direct information from the learnings.`,
+      
+      `4. BALANCED PERSPECTIVE: Present multiple viewpoints when the learnings contain different perspectives on a topic. Avoid bias and present information objectively.`,
+      
+      `5. STRUCTURE: The report should be well-structured with clear sections including:
+         - A brief prelude/introduction that orients the user to the topic
+         - An executive summary that outlines the key findings
+         - Main body sections organized by themes or topics
+         - A conclusion that directly addresses the original query
+         - If appropriate, a "Limitations" section acknowledging any gaps in the research`,
+      
+      `FORMAT REQUIREMENTS:
+         - Return ONLY plain markdown text. DO NOT include any JSON, XML, or other structured data formats in your response.
+         - Start with a # heading for the title.
+         - The prelude should come immediately after the title, before diving into the executive summary and main content.
+         - At the end of the report, include a "Sources" section that lists all the sources used, with their corresponding numbers.
+         - Example of a source citation in the text: "According to recent studies [1], the impact of climate change..."
+         - Example of the Sources section at the end:
+           # Sources
+           [1] Study on climate change impacts on coastal regions
+           [2] Analysis of rising sea levels in the Pacific
+         `,
+      
       languagePrompt(language),
     ].join('\n\n');
 

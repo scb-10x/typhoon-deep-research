@@ -17,6 +17,13 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 
+// Citation component to properly render citation numbers
+const Citation = ({ num }: { num: string }) => (
+  <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">
+    [{num}]
+  </span>
+);
+
 interface ResearchReportProps {
   report: string;
   onNewResearch: () => void;
@@ -245,33 +252,109 @@ export default function ResearchReport({ report, onNewResearch, learnings, promp
             
             {/* Report Content with Enhanced Markdown */}
             <div className="p-6 md:p-8" ref={reportRef}>
-              <article className="prose dark:prose-invert lg:prose-lg xl:prose-xl max-w-none print:max-w-full prose-headings:font-bold prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-md">
+              <article className="prose dark:prose-invert lg:prose-lg xl:prose-xl max-w-none print:max-w-full prose-headings:font-bold prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-md overflow-hidden">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw, rehypeSlug]}
                   components={{
-                    h1: ({...props}) => <h1 className="text-3xl lg:text-4xl font-extrabold mt-10 mb-6 pb-2 border-b-0 text-gray-900 dark:text-white bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" {...props} />,
-                    h2: ({...props}) => <h2 className="text-2xl lg:text-3xl font-bold mt-8 mb-4 pb-2 border-b-0 relative pl-4 text-gray-800 dark:text-gray-100 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-500 before:rounded-full" {...props} />,
-                    h3: ({...props}) => <h3 className="text-xl lg:text-2xl font-semibold mt-6 mb-3 text-gray-800 dark:text-gray-100" {...props} />,
-                    h4: ({...props}) => <h4 className="text-lg lg:text-xl font-medium mt-4 mb-2 text-gray-800 dark:text-gray-100" {...props} />,
-                    p: ({...props}) => <p className="my-4 leading-relaxed text-base lg:text-lg" {...props} />,
+                    h1: ({children, ...props}) => {
+                      // Check if this is the Sources heading
+                      if (typeof children === 'string' && children.toLowerCase() === 'sources') {
+                        return (
+                          <div className="mt-12 pt-6 border-t-2 border-gray-200 dark:border-gray-700">
+                            <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 break-words" {...props}>
+                              {children}
+                            </h1>
+                          </div>
+                        );
+                      }
+                      return <h1 className="text-3xl lg:text-4xl font-extrabold mt-10 mb-6 pb-2 border-b-0 text-gray-900 dark:text-white bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent break-words" {...props} />;
+                    },
+                    h2: ({...props}) => <h2 className="text-2xl lg:text-3xl font-bold mt-8 mb-4 pb-2 border-b-0 relative pl-4 text-gray-800 dark:text-gray-100 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-500 before:rounded-full break-words" {...props} />,
+                    h3: ({...props}) => <h3 className="text-xl lg:text-2xl font-semibold mt-6 mb-3 text-gray-800 dark:text-gray-100 break-words" {...props} />,
+                    h4: ({...props}) => <h4 className="text-lg lg:text-xl font-medium mt-4 mb-2 text-gray-800 dark:text-gray-100 break-words" {...props} />,
+                    p: ({children, ...props}) => {
+                      // Check if children is a string and contains citation pattern
+                      if (typeof children === 'string' && children.match(/\[\d+\]/)) {
+                        // Process string with citations
+                        const parts = [];
+                        let lastIndex = 0;
+                        const regex = /\[(\d+)\]/g;
+                        let match;
+                        
+                        while ((match = regex.exec(children)) !== null) {
+                          // Add text before the citation
+                          if (match.index > lastIndex) {
+                            parts.push(children.substring(lastIndex, match.index));
+                          }
+                          
+                          // Add the citation component
+                          parts.push(
+                            <Citation key={`citation-${match.index}`} num={match[1]} />
+                          );
+                          
+                          lastIndex = match.index + match[0].length;
+                        }
+                        
+                        // Add any remaining text
+                        if (lastIndex < children.length) {
+                          parts.push(children.substring(lastIndex));
+                        }
+                        
+                        return <p className="my-4 leading-relaxed text-base lg:text-lg break-words" {...props}>{parts}</p>;
+                      }
+                      
+                      return <p className="my-4 leading-relaxed text-base lg:text-lg break-words" {...props}>{children}</p>;
+                    },
                     ul: ({...props}) => <ul className="list-disc pl-6 my-6 space-y-3" {...props} />,
                     ol: ({...props}) => <ol className="list-decimal pl-6 my-6 space-y-3" {...props} />,
-                    li: ({...props}) => <li className="pl-2" {...props} />,
+                    li: ({children, ...props}) => {
+                      // Check if children is a string and contains citation pattern
+                      if (typeof children === 'string' && children.match(/\[\d+\]/)) {
+                        // Process string with citations
+                        const parts = [];
+                        let lastIndex = 0;
+                        const regex = /\[(\d+)\]/g;
+                        let match;
+                        
+                        while ((match = regex.exec(children)) !== null) {
+                          // Add text before the citation
+                          if (match.index > lastIndex) {
+                            parts.push(children.substring(lastIndex, match.index));
+                          }
+                          
+                          // Add the citation component
+                          parts.push(
+                            <Citation key={`citation-${match.index}`} num={match[1]} />
+                          );
+                          
+                          lastIndex = match.index + match[0].length;
+                        }
+                        
+                        // Add any remaining text
+                        if (lastIndex < children.length) {
+                          parts.push(children.substring(lastIndex));
+                        }
+                        
+                        return <li className="pl-2 break-words" {...props}>{parts}</li>;
+                      }
+                      
+                      return <li className="pl-2 break-words" {...props}>{children}</li>;
+                    },
                     blockquote: ({...props}) => (
-                      <blockquote className="my-6 pl-6 py-1 border-l-4 border-indigo-500 dark:border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 rounded-r-lg italic text-gray-700 dark:text-gray-300" {...props} />
+                      <blockquote className="my-6 pl-6 py-1 border-l-4 border-indigo-500 dark:border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 rounded-r-lg italic text-gray-700 dark:text-gray-300 break-words" {...props} />
                     ),
-                    a: ({...props}) => <a className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline transition-colors duration-200" {...props} />,
+                    a: ({...props}) => <a className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline transition-colors duration-200 break-words" {...props} />,
                     table: ({...props}) => (
-                      <div className="my-8 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" {...props} />
+                      <div className="my-8 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm max-w-full">
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-auto" {...props} />
                       </div>
                     ),
-                    th: ({...props}) => <th className="bg-gray-50 dark:bg-gray-800 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400" {...props} />,
-                    td: ({...props}) => <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-800" {...props} />,
+                    th: ({...props}) => <th className="bg-gray-50 dark:bg-gray-800 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 break-words" {...props} />,
+                    td: ({...props}) => <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-800 break-words" {...props} />,
                     code: ({inline, ...props}: {inline?: boolean} & React.HTMLProps<HTMLElement>) => 
                       inline 
-                        ? <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-indigo-600 dark:text-indigo-400" {...props} />
+                        ? <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-indigo-600 dark:text-indigo-400 break-words" {...props} />
                         : (
                           <div className="relative my-6 rounded-lg overflow-hidden shadow-md">
                             <div className="bg-gray-800 dark:bg-black px-4 py-2 text-xs text-gray-200 flex justify-between items-center">
@@ -286,7 +369,7 @@ export default function ResearchReport({ report, onNewResearch, learnings, promp
                                 Copy
                               </button>
                             </div>
-                            <code className="block bg-gray-50 dark:bg-gray-900 p-4 text-sm font-mono overflow-x-auto border-t border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200" {...props} />
+                            <code className="block bg-gray-50 dark:bg-gray-900 p-4 text-sm font-mono overflow-x-auto border-t border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words" {...props} />
                           </div>
                         ),
                     img: ({...props}) => (
@@ -313,6 +396,32 @@ export default function ResearchReport({ report, onNewResearch, learnings, promp
       >
         <ChevronUpIcon className="h-6 w-6" />
       </button>
+      
+      {/* Floating TOC toggle button - Only visible on desktop when TOC is hidden */}
+      {headings.length > 0 && !showToc && (
+        <button 
+          onClick={() => setShowToc(true)}
+          className="fixed bottom-20 right-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden hidden lg:flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          aria-label="Show table of contents"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+        </button>
+      )}
+      
+      {/* Mobile TOC toggle button */}
+      {headings.length > 0 && (
+        <button 
+          onClick={() => setShowToc(!showToc)}
+          className="fixed bottom-6 left-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden lg:hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          aria-label={showToc ? "Hide table of contents" : "Show table of contents"}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+        </button>
+      )}
       
       {/* Print Styles */}
       <style jsx global>{`
@@ -342,6 +451,49 @@ export default function ResearchReport({ report, onNewResearch, learnings, promp
             orphans: 3;
             widows: 3;
           }
+        }
+        
+        /* Fix for markdown overflow */
+        .prose {
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+        
+        .prose pre {
+          overflow-x: auto;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+        }
+        
+        .prose table {
+          table-layout: fixed;
+          width: 100%;
+        }
+        
+        .prose td, .prose th {
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          hyphens: auto;
+        }
+        
+        /* Fix for citation rendering */
+        .prose p a[href^="#citation"], 
+        .prose li a[href^="#citation"] {
+          text-decoration: none;
+          background-color: rgba(79, 70, 229, 0.1);
+          color: rgb(79, 70, 229);
+          border-radius: 9999px;
+          padding: 0.1rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+        
+        /* Dark mode for citations */
+        .dark .prose p a[href^="#citation"],
+        .dark .prose li a[href^="#citation"] {
+          background-color: rgba(79, 70, 229, 0.2);
+          color: rgb(129, 140, 248);
         }
       `}</style>
     </div>
