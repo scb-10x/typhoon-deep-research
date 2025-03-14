@@ -13,7 +13,13 @@ export const searchQueriesTypeSchema = z.object({
 });
 
 export const searchResultTypeSchema = z.object({
-  learnings: z.array(z.string()),
+  learnings: z.array(
+    z.object({
+      learning: z.string(),
+      url: z.string(),
+      title: z.string().optional(),
+    })
+  ),
   followUpQueries: z.array(
     z.object({
       query: z.string(),
@@ -94,7 +100,7 @@ export async function generateSearchQueries({
   language?: string;
   numQueries?: number;
   // optional, if provided, the research will continue from the last learning
-  learnings?: string[];
+  learnings?: Array<{learning: string; url: string; title?: string}>;
   /** Force the LLM to generate serp queries in a certain language */
   searchLanguage?: string;
 }) {
@@ -116,7 +122,7 @@ export async function generateSearchQueries({
         searchLanguage: searchLanguage || detectedLanguage,
       }),
     });
-
+ 
     if (!response.ok) {
       throw new Error("Failed to generate search queries");
     }
@@ -277,6 +283,19 @@ async function performWebSearch(query: string): Promise<WebSearchResult[]> {
   }
 }
 
+// Helper function to check if two learnings are the same
+function areSameLearnings(a: { learning: string; url: string; title?: string }, b: { learning: string; url: string; title?: string }): boolean {
+  return a.url === b.url && a.learning === b.learning;
+}
+
+// Helper function to convert string learnings to object learnings
+function convertLearningsToObjects(learnings: string[]): Array<{learning: string; url: string; title?: string}> {
+  return learnings.map(learning => ({
+    learning,
+    url: '', // Default empty URL
+  }));
+}
+
 // Main deep research function
 export async function deepResearch({
   query,
@@ -297,20 +316,25 @@ export async function deepResearch({
   /** The language of SERP query */
   searchLanguageCode?: string;
   /** Accumulated learnings from all nodes visited so far */
-  learnings?: Array<string>;
+  learnings?: Array<{learning: string; url: string; title?: string}> | string[];
   currentDepth?: number;
   /** Current node ID. Used for recursive calls */
   nodeId?: string;
   onProgress: (step: ResearchStep) => void;
 }): Promise<ResearchResult> {
+  // Convert string learnings to object learnings if needed
+  const objectLearnings = Array.isArray(learnings) && learnings.length > 0 && typeof learnings[0] === 'string'
+    ? convertLearningsToObjects(learnings as string[])
+    : learnings as Array<{learning: string; url: string; title?: string}>;
+
   // If we've reached the maximum depth, return the current learnings
   if (currentDepth >= maxDepth) {
     onProgress({
       type: "complete",
-      learnings,
+      learnings: objectLearnings,
       language: languageCode,
     });
-    return { learnings, language: languageCode };
+    return { learnings: objectLearnings, language: languageCode };
   }
 
   try {
@@ -330,7 +354,7 @@ export async function deepResearch({
     const queriesResponse = await generateSearchQueries({
       query,
       numQueries: breadth,
-      learnings,
+      learnings: objectLearnings,
       language: detectedLanguage,
       searchLanguage: searchLanguageCode || detectedLanguage,
     });
@@ -338,7 +362,7 @@ export async function deepResearch({
     const queries = await queriesResponse.finalResult;
 
     // Process each query in parallel
-    const allLearnings = [...learnings];
+    const allLearnings = [...objectLearnings];
     
     // Create an array to store all the promises for parallel execution
     const queryPromises = queries.queries.map(async (searchQuery: SearchQuery, i: number) => {
@@ -446,7 +470,7 @@ export async function deepResearch({
       followUpResults.forEach(result => {
         // Avoid duplicates by checking if learning already exists
         result.learnings.forEach(learning => {
-          if (!allLearnings.includes(learning)) {
+          if (!allLearnings.some(existingLearning => areSameLearnings(existingLearning, learning))) {
             allLearnings.push(learning);
           }
         });

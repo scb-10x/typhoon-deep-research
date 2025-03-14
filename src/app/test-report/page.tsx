@@ -14,13 +14,41 @@ export default function TestReportPage() {
 
   // Sample data for testing
   const sampleLearnings = [
-    "Thai language is written using the Thai script, which was derived from the Khmer script.",
-    "Thai is a tonal language with five tones: mid, low, falling, high, and rising.",
-    "The Thai language has 44 consonants and 15 vowel symbols that combine to form numerous vowel combinations.",
-    "Thai does not use spaces between words, but uses spaces for sentence breaks instead.",
-    "Thai has its own numerals, though Arabic numerals are also commonly used.",
-    "The Thai language belongs to the Tai-Kadai language family.",
-    "Thai has a complex system of pronouns that reflects the social status of speakers."
+    {
+      learning: "Thai language is written using the Thai script, which was derived from the Khmer script.",
+      url: "https://en.wikipedia.org/wiki/Thai_language",
+      title: "Thai language - Wikipedia"
+    },
+    {
+      learning: "Thai is a tonal language with five tones: mid, low, falling, high, and rising.",
+      url: "https://www.bbc.com/thai/thailand",
+      title: "BBC Thai"
+    },
+    {
+      learning: "The Thai language has 44 consonants and 15 vowel symbols that combine to form numerous vowel combinations.",
+      url: "https://www.omniglot.com/writing/thai.htm",
+      title: "Thai alphabet, pronunciation and language"
+    },
+    {
+      learning: "Thai does not use spaces between words, but uses spaces for sentence breaks instead.",
+      url: "https://www.learnthaiwithmod.com/2019/02/thai-writing-system/",
+      title: "Thai Writing System"
+    },
+    {
+      learning: "Thai has its own numerals, though Arabic numerals are also commonly used.",
+      url: "https://www.thai-language.com/ref/numbers",
+      title: "Thai Numbers"
+    },
+    {
+      learning: "The Thai language belongs to the Tai-Kadai language family.",
+      url: "https://www.ethnologue.com/language/tha",
+      title: "Thai - Ethnologue"
+    },
+    {
+      learning: "Thai has a complex system of pronouns that reflects the social status of speakers.",
+      url: "https://www.thaiembassy.com/thailand/thai-language-basics",
+      title: "Thai Language Basics"
+    }
   ];
 
   const samplePrompt = "Tell me about the Thai language and its characteristics";
@@ -97,7 +125,7 @@ export default function TestReportPage() {
             <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300">
                 {sampleLearnings.map((learning, index) => (
-                  <li key={index} className="mb-1">{learning}</li>
+                  <li key={index} className="mb-1">{learning.learning}</li>
                 ))}
               </ul>
             </div>

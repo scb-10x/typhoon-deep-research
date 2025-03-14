@@ -11,6 +11,13 @@ import { generateFeedback } from '@/lib/feedback';
 import { deepResearch, writeFinalReport, type ResearchStep } from '@/lib/deep-research';
 import { detectLanguage } from '@/utils/language-detection';
 
+// Define the learning type based on the ResearchStep
+type Learning = {
+  url: string;
+  learning: string;
+  title?: string;
+};
+
 type ResearchStage = 'query' | 'feedback' | 'researching' | 'generating-report' | 'report';
 
 export default function HomePage() {
@@ -22,7 +29,8 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [researchSteps, setResearchSteps] = useState<ResearchStep[]>([]);
   const [reportProgress, setReportProgress] = useState(0);
-  const [researchLearnings, setResearchLearnings] = useState<string[]>([]);
+  const [researchLearnings, setResearchLearnings] = useState<Learning[]>([]);
+  const [sourceUrls, setSourceUrls] = useState<Record<string, string>>({});
   const [enhancedQueryText, setEnhancedQueryText] = useState('');
   const [detectedLanguage, setDetectedLanguage] = useState<string>('en');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -48,11 +56,18 @@ export default function HomePage() {
       if (lastStep.type === 'complete') {
         // Store the learnings from the complete step
         if ('learnings' in lastStep && lastStep.learnings) {
-          setResearchLearnings(lastStep.learnings);
+          // Store the full learning objects
+          // The type of learnings in the complete step is an array of objects with url and learning properties
+          const typedLearnings = lastStep.learnings as unknown as Learning[];
+          setResearchLearnings(typedLearnings);
+          
+          // Create a map of citation index to URL
+          const urlMap: Record<string, string> = {};
+          typedLearnings.forEach((learning, index) => {
+            urlMap[(index + 1).toString()] = learning.url;
+          });
+          setSourceUrls(urlMap);
         }
-        
-        // We'll no longer set the generating-report stage here
-        // as it will be set right before writeFinalReport is called
       }
     }
   }, [researchSteps]);
@@ -138,7 +153,8 @@ ${Object.entries(responses)
       });
       
       // Store the learnings
-      setResearchLearnings(result.learnings);
+      const typedLearnings = result.learnings as unknown as Learning[];
+      setResearchLearnings(typedLearnings);
       
       // Set the stage to generating-report right before calling writeFinalReport
       setActiveStage('generating-report');
@@ -202,6 +218,7 @@ ${Object.entries(responses)
     setResearchSteps([]);
     setReportProgress(0);
     setResearchLearnings([]);
+    setSourceUrls({});
     setEnhancedQueryText('');
     setExpandedSections({
       query: true,
@@ -555,6 +572,7 @@ ${Object.entries(responses)
                     learnings={researchLearnings}
                     prompt={enhancedQueryText}
                     language={detectedLanguage}
+                    sourceUrls={sourceUrls}
                   />
                 </div>
               </div>

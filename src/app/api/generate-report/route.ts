@@ -10,7 +10,11 @@ import { extractResultFromThinking } from '@/utils/ai-response';
 // Define the request schema
 const requestSchema = z.object({
   prompt: z.string(),
-  learnings: z.array(z.string()),
+  learnings: z.array(z.object({
+    learning: z.string(),
+    url: z.string().optional(),
+    title: z.string().optional()
+  })),
   language: z.string().default('English'),
 });
 
@@ -20,22 +24,21 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { prompt, learnings, language } = requestSchema.parse(body);
 
+    // Format learnings without URLs for the prompt
     const formattedLearnings = learnings
-      .map((learning, i) => `${i + 1}. ${learning}`)
-      .join('\n');
+      .map((learning, i) => {
+        return `${i + 1}. ${learning.learning}`;
+      })
+      .join('\n\n');
 
     const reportPrompt = [
-      `Based on the following research query and learnings, write a comprehensive research report. The report should synthesize the learnings into a coherent narrative, highlighting key insights, patterns, and conclusions.`,
-      `<query>${prompt}</query>`,
-      `<learnings>\n${formattedLearnings}\n</learnings>`,
-      
       `IMPORTANT CONSTRAINTS AND GUIDELINES:`,
       
       `1. USER ALIGNMENT (HIGHEST PRIORITY): Ensure the report directly addresses the user's original query. Focus on providing practical, actionable insights that are relevant to the user's needs. Organize information in a way that prioritizes what would be most valuable to someone asking this specific question. Begin with a brief prelude that helps orient the user to the topic and sets expectations for what they'll learn.`,
       
       `2. FACTUAL ACCURACY: Never make up facts or information. Only use information that is explicitly provided in the learnings. If you're uncertain about something, acknowledge the limitation rather than inventing details.`,
       
-      `3. CITATIONS: Use numbered citations like "[1]" to reference specific learnings. Each citation number should correspond to the index of the source in the learnings list. DO NOT include URLs in the report text - only use the citation numbers. Include citations whenever you present specific facts, statistics, or direct information from the learnings.`,
+      `3. CITATIONS: Use numbered citations like "[1]" to reference specific learnings. Each citation number should correspond to the index of the source in the learnings list. Include citations whenever you present specific facts, statistics, or direct information from the learnings.`,
       
       `4. BALANCED PERSPECTIVE: Present multiple viewpoints when the learnings contain different perspectives on a topic. Avoid bias and present information objectively.`,
       
@@ -54,9 +57,12 @@ export async function POST(request: Request) {
          - Example of a source citation in the text: "According to recent studies [1], the impact of climate change..."
          - Example of the Sources section at the end:
            # Sources
-           [1] Study on climate change impacts on coastal regions
-           [2] Analysis of rising sea levels in the Pacific
+           [1] Source 1
+           [2] Source 2
          `,
+         `Based on the following research query and learnings, write a comprehensive research report. The report should synthesize the learnings into a coherent narrative, highlighting key insights, patterns, and conclusions.`,
+         `<query>${prompt}</query>`,
+         `<learnings>\n${formattedLearnings}\n</learnings>`,
       
       languagePrompt(language),
     ].join('\n\n');
@@ -88,6 +94,117 @@ export async function POST(request: Request) {
     // Ensure the report starts with a markdown heading
     if (!cleanReport.trim().startsWith('#')) {
       cleanReport = `# Typhoon Deep Research\n\n${cleanReport}`;
+    }
+    
+    // Add URLs to the Sources section
+    // Match various possible headings for the sources section (Sources, References, แหล่งข้อมูล, etc.)
+    const sourcesHeadingPatterns = [
+      '# Sources',
+      '# SOURCES',
+      '# References',
+      '# REFERENCES',
+      '# แหล่งข้อมูล', // Thai
+      '# อ้างอิง', // Thai alternative
+      '# 参考文献', // Japanese
+      '# 来源', // Chinese
+      '# 출처', // Korean
+      '# Quellen', // German
+      '# Fuentes', // Spanish
+      '# Sources citées', // French
+      '# Fonti', // Italian
+      '# Источники', // Russian
+      '# مصادر', // Arabic
+      '# Źródła', // Polish
+      '# Bronnen', // Dutch
+      '# Fontes', // Portuguese
+      '# Kilder', // Danish/Norwegian
+      '# Källor', // Swedish
+    ];
+    
+    // Create a regex pattern that matches any of the source heading patterns
+    const sourcesHeadingRegexPattern = sourcesHeadingPatterns
+      .map(pattern => pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // Escape regex special chars
+      .join('|');
+    
+    const sourcesRegex = new RegExp(`((?:${sourcesHeadingRegexPattern})\\s*\\n)([\\s\\S]*)$`, 'i');
+    const sourcesMatch = cleanReport.match(sourcesRegex);
+    
+    if (sourcesMatch) {
+      const sourcesHeader = sourcesMatch[1];
+      const sourcesList = sourcesMatch[2];
+      
+      // Extract source numbers and add URLs
+      const sourceLines = sourcesList.trim().split('\n');
+      const updatedSourceLines = sourceLines.map(line => {
+        // Match citation numbers like [1], [2], etc.
+        const sourceMatch = line.match(/\[(\d+)\]/);
+        if (sourceMatch) {
+          const sourceIndex = parseInt(sourceMatch[1]) - 1;
+          if (sourceIndex >= 0 && sourceIndex < learnings.length) {
+            const learning = learnings[sourceIndex];
+            if (learning.url) {
+              if(learning.title) {
+                return `[${sourceMatch[1]}](${learning.url}) ${learning.title ? ` - ${learning.title}` : 'Link'}`;
+              } else{
+                return undefined
+              }
+            }
+          }
+        }
+        return line;
+      }).filter(line => line !== undefined);
+      
+      // Replace the sources section with the updated one
+      cleanReport = cleanReport.replace(
+        sourcesRegex, 
+        `${sourcesHeader}${updatedSourceLines.join('\n\n')}`
+      );
+    } else {
+      // If no Sources section exists, add one with the appropriate heading based on language
+      let sourcesHeading = '# Sources';
+      
+      // Set the appropriate heading based on language
+      if (language) {
+        const lowerLang = language.toLowerCase();
+        if (lowerLang.includes('thai') || lowerLang === 'th') {
+          sourcesHeading = '# แหล่งข้อมูล';
+        } else if (lowerLang.includes('japanese') || lowerLang === 'ja') {
+          sourcesHeading = '# 参考文献';
+        } else if (lowerLang.includes('chinese') || lowerLang === 'zh') {
+          sourcesHeading = '# 来源';
+        } else if (lowerLang.includes('korean') || lowerLang === 'ko') {
+          sourcesHeading = '# 출처';
+        } else if (lowerLang.includes('german') || lowerLang === 'de') {
+          sourcesHeading = '# Quellen';
+        } else if (lowerLang.includes('spanish') || lowerLang === 'es') {
+          sourcesHeading = '# Fuentes';
+        } else if (lowerLang.includes('french') || lowerLang === 'fr') {
+          sourcesHeading = '# Sources citées';
+        } else if (lowerLang.includes('italian') || lowerLang === 'it') {
+          sourcesHeading = '# Fonti';
+        } else if (lowerLang.includes('russian') || lowerLang === 'ru') {
+          sourcesHeading = '# Источники';
+        } else if (lowerLang.includes('arabic') || lowerLang === 'ar') {
+          sourcesHeading = '# مصادر';
+        } else if (lowerLang.includes('polish') || lowerLang === 'pl') {
+          sourcesHeading = '# Źródła';
+        } else if (lowerLang.includes('dutch') || lowerLang === 'nl') {
+          sourcesHeading = '# Bronnen';
+        } else if (lowerLang.includes('portuguese') || lowerLang === 'pt') {
+          sourcesHeading = '# Fontes';
+        } else if (lowerLang.includes('danish') || lowerLang === 'da' || 
+                  lowerLang.includes('norwegian') || lowerLang === 'no') {
+          sourcesHeading = '# Kilder';
+        } else if (lowerLang.includes('swedish') || lowerLang === 'sv') {
+          sourcesHeading = '# Källor';
+        }
+      }
+      
+      const sourcesSection = `\n\n${sourcesHeading}\n${learnings.map((learning, i) => 
+        `[${i + 1}]${learning.url ? '('+ learning.url + ')' : ''}${learning.title ? ` - ${learning.title}` : ''}`
+      ).join('\n\n')}`;
+      
+      cleanReport = `${cleanReport}${sourcesSection}`;
     }
     
     // For the report, we don't need to parse JSON, just return the text

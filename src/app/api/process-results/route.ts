@@ -32,9 +32,15 @@ export async function POST(request: Request) {
     // Define the response schema
     const responseSchema = z.object({
       learnings: z
-        .array(z.string())
+        .array(
+          z.object({
+            learning: z.string().describe('A complete, detailed sentence describing a key insight from the search results.'),
+            url: z.string().describe('The source URL from which this learning was extracted.'),
+            title: z.string().optional().describe('The title of the source page (optional).'),
+          })
+        )
         .describe(
-          `Key learnings from the search results. Each learning should be a complete, detailed sentence.`,
+          `Key learnings from the search results, each with its source URL.`,
         ),
       followUpQueries: z
         .array(
@@ -63,6 +69,7 @@ export async function POST(request: Request) {
       `Given the following search query and results, extract ${numLearnings} key learnings and suggest ${numFollowUpQuestions} follow-up search queries.`,
       `<query>${query}</query>`,
       `<results>${resultsText}</results>`,
+      `For each learning, include the URL of the source from which it was extracted. Each learning should be a complete, detailed sentence with specific information.`,
       `You MUST respond in JSON matching this JSON schema: ${jsonSchema}`,
       languagePrompt(language),
     ].join('\n\n');

@@ -11,7 +11,11 @@ import { languageCodeToName } from '@/utils/language-detection';
  * @param language The language code
  * @returns A mock report in markdown format
  */
-export function generateMockReport(prompt: string, learnings: string[], language: string): string {
+export function generateMockReport(
+  prompt: string, 
+  learnings: Array<{learning: string; url: string; title?: string}>, 
+  language: string
+): string {
   // Get the language name for display
   const languageName = languageCodeToName[language] || language;
   
@@ -31,7 +35,7 @@ This research report explores the topic: "${prompt}". The following sections pre
   const findings = `
 ## Key Findings
 
-${learnings.map((learning, index) => `${index + 1}. ${learning}`).join('\n\n')}
+${learnings.map((learning, index) => `${index + 1}. ${learning.learning} [${index + 1}]`).join('\n\n')}
 `;
 
   // Create a conclusion
@@ -39,6 +43,51 @@ ${learnings.map((learning, index) => `${index + 1}. ${learning}`).join('\n\n')}
 ## Conclusion
 
 Based on the research findings, we can conclude that this topic has several important aspects worth noting. The information gathered provides valuable insights that address the original research query.
+`;
+
+  // Get the appropriate sources heading based on language
+  let sourcesHeading = '# Sources';
+  
+  // Set the appropriate heading based on language
+  const lowerLang = language.toLowerCase();
+  if (lowerLang.includes('thai') || lowerLang === 'th') {
+    sourcesHeading = '# แหล่งข้อมูล';
+  } else if (lowerLang.includes('japanese') || lowerLang === 'ja') {
+    sourcesHeading = '# 参考文献';
+  } else if (lowerLang.includes('chinese') || lowerLang === 'zh') {
+    sourcesHeading = '# 来源';
+  } else if (lowerLang.includes('korean') || lowerLang === 'ko') {
+    sourcesHeading = '# 출처';
+  } else if (lowerLang.includes('german') || lowerLang === 'de') {
+    sourcesHeading = '# Quellen';
+  } else if (lowerLang.includes('spanish') || lowerLang === 'es') {
+    sourcesHeading = '# Fuentes';
+  } else if (lowerLang.includes('french') || lowerLang === 'fr') {
+    sourcesHeading = '# Sources citées';
+  } else if (lowerLang.includes('italian') || lowerLang === 'it') {
+    sourcesHeading = '# Fonti';
+  } else if (lowerLang.includes('russian') || lowerLang === 'ru') {
+    sourcesHeading = '# Источники';
+  } else if (lowerLang.includes('arabic') || lowerLang === 'ar') {
+    sourcesHeading = '# مصادر';
+  } else if (lowerLang.includes('polish') || lowerLang === 'pl') {
+    sourcesHeading = '# Źródła';
+  } else if (lowerLang.includes('dutch') || lowerLang === 'nl') {
+    sourcesHeading = '# Bronnen';
+  } else if (lowerLang.includes('portuguese') || lowerLang === 'pt') {
+    sourcesHeading = '# Fontes';
+  } else if (lowerLang.includes('danish') || lowerLang === 'da' || 
+            lowerLang.includes('norwegian') || lowerLang === 'no') {
+    sourcesHeading = '# Kilder';
+  } else if (lowerLang.includes('swedish') || lowerLang === 'sv') {
+    sourcesHeading = '# Källor';
+  }
+
+  // Add a sources section with URLs
+  const sources = `
+${sourcesHeading}
+
+${learnings.map((learning, index) => `[${index + 1}] ${learning.url || 'No URL provided'}${learning.title ? ` - ${learning.title}` : ''}`).join('\n')}
 `;
 
   // Add a timestamp
@@ -49,7 +98,7 @@ Based on the research findings, we can conclude that this topic has several impo
 `;
 
   // Combine all sections
-  return `${title}${introduction}${findings}${conclusion}${timestamp}`;
+  return `${title}${introduction}${findings}${conclusion}${sources}${timestamp}`;
 }
 
 /**
@@ -62,7 +111,7 @@ export async function mockWriteFinalReport({
   language,
 }: {
   prompt: string;
-  learnings: string[];
+  learnings: Array<{learning: string; url: string; title?: string}>;
   language: string;
 }) {
   // Generate a mock report

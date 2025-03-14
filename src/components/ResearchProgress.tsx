@@ -13,7 +13,7 @@ interface ResearchNode {
   query: string;
   status: 'pending' | 'searching' | 'processing' | 'complete' | 'error';
   children: ResearchNode[];
-  learnings?: string[];
+  learnings?: Array<{learning: string; url: string; title?: string}>;
   depth: number;
 }
 
@@ -206,14 +206,14 @@ export default function ResearchProgress({ query, researchSteps }: ResearchProgr
               node.status = 'processing';
               // Add learnings if available
               if (step.result?.learnings && step.result.learnings.length > 0) {
-                node.learnings = step.result.learnings.filter(Boolean) as string[];
+                node.learnings = step.result.learnings as Array<{learning: string; url: string; title?: string}>;
               }
               break;
             case 'node_complete':
               node.status = 'complete';
               // Add learnings if available
               if (step.result?.learnings && step.result.learnings.length > 0) {
-                node.learnings = step.result.learnings;
+                node.learnings = step.result.learnings as Array<{learning: string; url: string; title?: string}>;
               }
               break;
             case 'error':
@@ -297,10 +297,29 @@ export default function ResearchProgress({ query, researchSteps }: ResearchProgr
               {node.query}
             </div>
             {node.learnings && node.learnings.length > 0 && (
-              <div className={`mt-2 pl-4 border-l-2 ${borderColor}`}>
+              <div className={`mt-3 space-y-2 pl-4 border-l-2 ${borderColor}`}>
                 {node.learnings.map((learning, i) => (
-                  <div key={i} className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-                    • {learning}
+                  <div key={i} className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-2 rounded-md">
+                    {typeof learning === 'string' ? learning : (
+                      <>
+                        {learning.learning}
+                        {learning.url && (
+                          <div className="mt-1">
+                            <a 
+                              href={learning.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-blue-500 hover:underline text-xs flex items-center"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                              {learning.title || learning.url}
+                            </a>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 ))}
               </div>

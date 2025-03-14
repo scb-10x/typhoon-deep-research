@@ -12,7 +12,13 @@ import { extractResultFromThinking, safeJsonParse } from '@/utils/ai-response';
 const requestSchema = z.object({
   query: z.string(),
   numQueries: z.number().default(3),
-  learnings: z.array(z.string()).optional(),
+  learnings: z.array(
+    z.object({
+      learning: z.string(),
+      url: z.string().optional(),
+      title: z.string().optional()
+    })
+  ).optional(),
   language: z.string().default('English'),
   searchLanguage: z.string().optional(),
 });
@@ -47,7 +53,7 @@ export async function POST(request: Request) {
 
     if (learnings && learnings.length > 0) {
       prompt += `You have already learned the following from previous searches:\n\n${learnings
-        .map((learning, i) => `${i + 1}. ${learning}`)
+        .map((learning, i) => `${i + 1}. ${learning.learning}`)
         .join('\n')}\n\n`;
     }
 
