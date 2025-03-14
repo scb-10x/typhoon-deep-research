@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { type ResearchStep } from '@/lib/deep-research';
 
 interface ResearchProgressProps {
   query: string;
   researchSteps: ResearchStep[];
+  researchStartTime?: number | null;
 }
 
 interface ResearchNode {
@@ -17,7 +18,50 @@ interface ResearchNode {
   depth: number;
 }
 
-export default function ResearchProgress({ query, researchSteps }: ResearchProgressProps) {
+// Timer component to show elapsed time
+function ResearchTimer({ startTime }: { startTime: number }) {
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    // Update elapsed time every second
+    timerRef.current = setInterval(() => {
+      setElapsedTime(Date.now() - startTime);
+    }, 1000);
+
+    // Clean up interval on unmount
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [startTime]);
+
+  // Format elapsed time
+  const formatElapsedTime = (ms: number): string => {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = (minutes % 60).toString().padStart(2, '0');
+    const formattedSeconds = (seconds % 60).toString().padStart(2, '0');
+    
+    if (hours > 0) {
+      return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    } else {
+      return `${formattedMinutes}:${formattedSeconds}`;
+    }
+  };
+
+  return (
+    <div className="text-sm font-medium text-indigo-600 dark:text-indigo-400 ml-2">
+      Time elapsed: {formatElapsedTime(elapsedTime)}
+    </div>
+  );
+}
+
+export default function ResearchProgress({ query, researchSteps, researchStartTime }: ResearchProgressProps) {
   const [currentStep, setCurrentStep] = useState('Generating search queries...');
   const [researchTree, setResearchTree] = useState<ResearchNode>({
     id: '0',
@@ -286,6 +330,7 @@ export default function ResearchProgress({ query, researchSteps }: ResearchProgr
       <div className="mb-8">
         <div className="flex justify-between mb-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentStep}</span>
+          {researchStartTime && <ResearchTimer startTime={researchStartTime} />}
         </div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100}>
           <div 

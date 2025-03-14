@@ -48,6 +48,7 @@ interface ResearchReportProps {
   prompt: string;
   language?: string;
   sourceUrls?: Record<string, string>; // Map of citation numbers to URLs
+  researchDuration?: number | null; // Duration of research in milliseconds
 }
 
 export default function ResearchReport({
@@ -57,6 +58,7 @@ export default function ResearchReport({
   prompt,
   language = "en",
   sourceUrls = {},
+  researchDuration = null,
 }: ResearchReportProps) {
   const [copied, setCopied] = useState(false);
   const [currentReport, setCurrentReport] = useState(report);
@@ -223,14 +225,38 @@ export default function ResearchReport({
     }
   };
 
+  // Format duration into a readable string
+  const formatDuration = (ms: number): string => {
+    if (ms < 1000) return `${ms}ms`;
+    
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds % 60}s`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
   return (
     <div className="print:bg-white">
       {/* Action Bar - Hidden when printing */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4 print:hidden">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-          <BookmarkIcon className="h-6 w-6 mr-2 text-indigo-600 dark:text-indigo-400" />
-          Research Report
-        </h2>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+            <BookmarkIcon className="h-6 w-6 mr-2 text-indigo-600 dark:text-indigo-400" />
+            Research Report
+          </h2>
+          {researchDuration && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Research completed in {formatDuration(researchDuration)}
+            </p>
+          )}
+        </div>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={handleRegenerateReport}

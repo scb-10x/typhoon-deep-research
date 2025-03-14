@@ -33,12 +33,14 @@ export default function HomePage() {
   const [sourceUrls, setSourceUrls] = useState<Record<string, string>>({});
   const [enhancedQueryText, setEnhancedQueryText] = useState('');
   const [detectedLanguage, setDetectedLanguage] = useState<string>('en');
+  const [researchDuration, setResearchDuration] = useState<number | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     query: true,
     feedback: false,
     researching: false,
     report: false
   });
+  const [researchStartTime, setResearchStartTime] = useState<number | null>(null);
   
   // Toggle section expansion with proper type
   const toggleSection = (section: string) => (event: MouseEvent<HTMLDivElement>) => {
@@ -119,6 +121,10 @@ export default function HomePage() {
       setCompletedStages(prev => [...prev, 'feedback']);
       setActiveStage('researching');
       
+      // Record the research start time
+      const startTime = Date.now();
+      setResearchStartTime(startTime);
+      
       // Auto-expand the research section
       setExpandedSections(prev => ({
         ...prev,
@@ -191,6 +197,12 @@ ${Object.entries(responses)
       
       // Set progress to 100% and transition to report stage
       setReportProgress(100);
+      
+      // Calculate and set the research duration
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      setResearchDuration(duration);
+      
       setTimeout(() => {
         setCompletedStages(prev => [...prev, 'researching']);
         setActiveStage('report');
@@ -220,6 +232,8 @@ ${Object.entries(responses)
     setResearchLearnings([]);
     setSourceUrls({});
     setEnhancedQueryText('');
+    setResearchDuration(null);
+    setResearchStartTime(null);
     setExpandedSections({
       query: true,
       feedback: false,
@@ -506,6 +520,7 @@ ${Object.entries(responses)
                     <ResearchProgress 
                       query={query} 
                       researchSteps={researchSteps}
+                      researchStartTime={researchStartTime}
                     />
                   )}
                 </div>
@@ -573,6 +588,7 @@ ${Object.entries(responses)
                     prompt={enhancedQueryText}
                     language={detectedLanguage}
                     sourceUrls={sourceUrls}
+                    researchDuration={researchDuration}
                   />
                 </div>
               </div>
