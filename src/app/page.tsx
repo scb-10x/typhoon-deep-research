@@ -9,6 +9,7 @@ import ResearchProgress from '@/components/ResearchProgress';
 import ResearchReport from '@/components/ResearchReport';
 import { generateFeedback } from '@/lib/feedback';
 import { deepResearch, writeFinalReport, type ResearchStep } from '@/lib/deep-research';
+import { detectLanguage } from '@/utils/language-detection';
 
 type ResearchStage = 'query' | 'feedback' | 'researching' | 'generating-report' | 'report';
 
@@ -23,6 +24,7 @@ export default function HomePage() {
   const [reportProgress, setReportProgress] = useState(0);
   const [researchLearnings, setResearchLearnings] = useState<string[]>([]);
   const [enhancedQueryText, setEnhancedQueryText] = useState('');
+  const [detectedLanguage, setDetectedLanguage] = useState<string>('en');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     query: true,
     feedback: false,
@@ -81,10 +83,14 @@ export default function HomePage() {
     setIsLoading(true);
     
     try {
+      // Detect language from the query using the utility function
+      const language = detectLanguage(researchQuery);
+      setDetectedLanguage(language);
+      
       // Use the real feedback generation function with await
       const feedbackResponse = await generateFeedback({
         query: researchQuery,
-        language: 'English',
+        language,
         numQuestions: 2,
       });
       
@@ -146,7 +152,7 @@ ${Object.entries(responses)
         query: enhancedQuery,
         breadth: 2,
         maxDepth: 3,
-        languageCode: 'en',
+        languageCode: detectedLanguage,
         onProgress: (step) => {
           setResearchSteps(prev => [...prev, step]);
         }
@@ -159,7 +165,7 @@ ${Object.entries(responses)
       const reportResponse = await writeFinalReport({
         prompt: enhancedQuery,
         learnings: result.learnings,
-        language: 'English',
+        language: detectedLanguage,
       });
       
       // Get the report text directly
@@ -546,6 +552,7 @@ ${Object.entries(responses)
                     onNewResearch={startNewResearch}
                     learnings={researchLearnings}
                     prompt={enhancedQueryText}
+                    language={detectedLanguage}
                   />
                 </div>
               </div>

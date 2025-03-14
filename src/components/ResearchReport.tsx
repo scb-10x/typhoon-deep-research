@@ -4,18 +4,21 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { ArrowPathIcon, DocumentArrowDownIcon, ShareIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { writeFinalReport } from '@/lib/deep-research';
+import { languageCodeToName } from '@/utils/language-detection';
 
 interface ResearchReportProps {
   report: string;
   onNewResearch: () => void;
   learnings: string[];
   prompt: string;
+  language?: string;
 }
 
-export default function ResearchReport({ report, onNewResearch, learnings, prompt }: ResearchReportProps) {
+export default function ResearchReport({ report, onNewResearch, learnings, prompt, language = 'en' }: ResearchReportProps) {
   const [copied, setCopied] = useState(false);
   const [currentReport, setCurrentReport] = useState(report);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  console.log(currentReport)
   
   const handleDownload = () => {
     // Create a blob from the report text
@@ -55,9 +58,9 @@ export default function ResearchReport({ report, onNewResearch, learnings, promp
       const reportResponse = await writeFinalReport({
         prompt,
         learnings,
-        language: 'English',
+        language,
       });
-      
+      console.log(reportResponse)
       // Get the report text
       const newReportText = await reportResponse.text;
       setCurrentReport(newReportText);
@@ -70,6 +73,11 @@ export default function ResearchReport({ report, onNewResearch, learnings, promp
   
   // Extract title from the report (assuming first line is a heading)
   const reportTitle = currentReport.split('\n')[0].replace(/^#+ /, '');
+  
+  // Get language name for display
+  const getLanguageName = (code: string): string => {
+    return languageCodeToName[code] || code;
+  };
   
   return (
     <div>
@@ -127,7 +135,12 @@ export default function ResearchReport({ report, onNewResearch, learnings, promp
         {/* Report Header */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{reportTitle}</h1>
-          <p className="text-indigo-100">Generated on {new Date().toLocaleDateString()}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-indigo-100">Generated on {new Date().toLocaleDateString()}</p>
+            <span className="text-xs bg-indigo-700/50 px-2 py-0.5 rounded-full text-white">
+              {getLanguageName(language)}
+            </span>
+          </div>
         </div>
         
         {/* Report Content - Simple Markdown */}

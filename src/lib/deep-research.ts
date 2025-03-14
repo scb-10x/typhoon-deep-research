@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { DeepPartial } from "../utils/json";
+import { detectLanguage } from "@/utils/language-detection";
 
 // Schema definitions
 export const searchQueriesTypeSchema = z.object({
@@ -24,6 +25,7 @@ export const searchResultTypeSchema = z.object({
 // Type definitions
 export type ResearchResult = {
   learnings: ProcessedSearchResult["learnings"];
+  language?: string; // Add language to research result
 };
 
 export interface WriteFinalReportParams {
@@ -78,7 +80,7 @@ export type ResearchStep =
       nodeId: string;
     }
   | { type: "error"; message: string; nodeId: string }
-  | { type: "complete"; learnings: ProcessedSearchResult["learnings"] };
+  | { type: "complete"; learnings: ProcessedSearchResult["learnings"]; language?: string };
 
 // take an user query, return a list of SERP queries
 export async function generateSearchQueries({
@@ -89,7 +91,7 @@ export async function generateSearchQueries({
   searchLanguage,
 }: {
   query: string;
-  language: string;
+  language?: string;
   numQueries?: number;
   // optional, if provided, the research will continue from the last learning
   learnings?: string[];
@@ -97,6 +99,9 @@ export async function generateSearchQueries({
   searchLanguage?: string;
 }) {
   try {
+    // Auto-detect language if not provided
+    const detectedLanguage = language || detectLanguage(query);
+    
     // Call the server-side API route with a simple await request
     const response = await fetch("/api/generate-queries", {
       method: "POST",
@@ -107,8 +112,8 @@ export async function generateSearchQueries({
         query,
         numQueries,
         learnings,
-        language,
-        searchLanguage,
+        language: detectedLanguage,
+        searchLanguage: searchLanguage || detectedLanguage,
       }),
     });
 
@@ -127,6 +132,7 @@ export async function generateSearchQueries({
         }),
       },
       finalResult: Promise.resolve(data),
+      language: detectedLanguage,
     };
   } catch (error) {
     console.error("Error generating search queries:", error);
@@ -144,11 +150,14 @@ export async function processSearchResult({
 }: {
   query: string;
   results: WebSearchResult[];
-  language: string;
+  language?: string;
   numLearnings?: number;
   numFollowUpQuestions?: number;
 }) {
   try {
+    // Auto-detect language if not provided
+    const detectedLanguage = language || detectLanguage(query);
+    
     // Call the server-side API route with a simple await request
     const response = await fetch("/api/process-results", {
       method: "POST",
@@ -160,7 +169,7 @@ export async function processSearchResult({
         results,
         numLearnings,
         numFollowUpQuestions,
-        language,
+        language: detectedLanguage,
       }),
     });
 
@@ -179,6 +188,7 @@ export async function processSearchResult({
         }),
       },
       finalResult: Promise.resolve(data),
+      language: detectedLanguage,
     };
   } catch (error) {
     console.error("Error processing search results:", error);
@@ -193,6 +203,9 @@ export async function writeFinalReport({
   language,
 }: WriteFinalReportParams) {
   try {
+    // Auto-detect language if not provided
+    const detectedLanguage = language || detectLanguage(prompt);
+    
     // Call the server-side API route with a simple await request
     const response = await fetch("/api/generate-report", {
       method: "POST",
@@ -202,7 +215,7 @@ export async function writeFinalReport({
       body: JSON.stringify({
         prompt,
         learnings,
-        language,
+        language: detectedLanguage,
       }),
     });
 
@@ -227,6 +240,7 @@ export async function writeFinalReport({
         },
       }),
       text: Promise.resolve(data.report),
+      language: detectedLanguage,
     };
   } catch (error) {
     console.error("Error generating research report:", error);
@@ -268,7 +282,7 @@ export async function deepResearch({
   query,
   breadth = 2,
   maxDepth = 2,
-  languageCode = "en",
+  languageCode,
   searchLanguageCode,
   learnings = [],
   onProgress,
@@ -294,11 +308,15 @@ export async function deepResearch({
     onProgress({
       type: "complete",
       learnings,
+      language: languageCode,
     });
-    return { learnings };
+    return { learnings, language: languageCode };
   }
 
   try {
+    // Auto-detect language if not provided
+    const detectedLanguage = languageCode || detectLanguage(query);
+    
     // Generate search queries
     onProgress({
       type: "generating_query",
@@ -313,8 +331,8 @@ export async function deepResearch({
       query,
       numQueries: breadth,
       learnings,
-      language: languageCode,
-      searchLanguage: searchLanguageCode,
+      language: detectedLanguage,
+      searchLanguage: searchLanguageCode || detectedLanguage,
     });
 
     const queries = await queriesResponse.finalResult;
@@ -360,7 +378,7 @@ export async function deepResearch({
       const processResponse = await processSearchResult({
         query: searchQuery.query,
         results: searchResults,
-        language: languageCode,
+        language: detectedLanguage,
       });
 
       const processedResult = await processResponse.finalResult;
@@ -402,8 +420,8 @@ export async function deepResearch({
               query: followUpQuery.query,
               breadth: Math.floor(breadth / 2),
               maxDepth,
-              languageCode,
-              searchLanguageCode,
+              languageCode: detectedLanguage,
+              searchLanguageCode: searchLanguageCode || detectedLanguage,
               learnings: allLearnings,
               onProgress,
               currentDepth: currentDepth + 1,
@@ -439,9 +457,10 @@ export async function deepResearch({
     onProgress({
       type: "complete",
       learnings: allLearnings,
+      language: detectedLanguage,
     });
 
-    return { learnings: allLearnings };
+    return { learnings: allLearnings, language: detectedLanguage };
   } catch (error) {
     onProgress({
       type: "error",

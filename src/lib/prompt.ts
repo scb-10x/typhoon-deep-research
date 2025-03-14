@@ -1,3 +1,5 @@
+import { getLanguageInstructions } from '@/utils/language-detection';
+
 export const systemPrompt = () => {
   const now = new Date().toISOString();
   return `You are an expert researcher. Today is ${now}. Follow these instructions when responding:
@@ -15,15 +17,34 @@ export const systemPrompt = () => {
 };
 
 /**
+ * Map language codes to full language names
+ */
+export const languageCodeToName = (code: string): string => {
+  const languageMap: Record<string, string> = {
+    'en': 'English',
+    'es': 'Spanish',
+    'fr': 'French',
+    'de': 'German',
+    'it': 'Italian',
+    'pt': 'Portuguese',
+    'ja': 'Japanese',
+    'zh': 'Chinese',
+    'ko': 'Korean',
+    'ru': 'Russian',
+    'ar': 'Arabic',
+    'hi': 'Hindi',
+    'th': 'Thai',
+    // Add more languages as needed
+  };
+  
+  return languageMap[code] || code;
+};
+
+/**
  * Construct the language requirement prompt for LLMs.
  * Placing this at the end of the prompt makes it easier for the LLM to pay attention to.
- * @param language the language of the prompt, e.g. `English`
+ * @param language the language code or name, e.g. `en` or `English`
  */
 export const languagePrompt = (language: string) => {
-  let languagePrompt = `Respond in ${language}.`;
-
-  if (language === '中文') {
-    languagePrompt += ' 在中文和英文之间添加适当的空格来提升可读性';
-  }
-  return languagePrompt;
+  return getLanguageInstructions(language);
 }; 
