@@ -18,7 +18,6 @@ interface ResearchNode {
 }
 
 export default function ResearchProgress({ query, researchSteps }: ResearchProgressProps) {
-  const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState('Generating search queries...');
   const [researchTree, setResearchTree] = useState<ResearchNode>({
     id: '0',
@@ -34,63 +33,6 @@ export default function ResearchProgress({ query, researchSteps }: ResearchProgr
     
     // Get the latest step
     const latestStep = researchSteps[researchSteps.length - 1];
-    
-    // Calculate global progress based on all steps
-    const calculateGlobalProgress = () => {
-      // Count completed nodes and total expected nodes
-      const nodeIds = new Set<string>();
-      let completedNodes = 0;
-      let totalNodes = 0;
-      
-      // Track unique node IDs and their states
-      for (const step of researchSteps) {
-        if ('nodeId' in step && step.nodeId) {
-          nodeIds.add(step.nodeId);
-        }
-        
-        // Count completed nodes
-        if (step.type === 'node_complete') {
-          completedNodes++;
-        }
-        
-        // Count generated queries to estimate total nodes
-        if (step.type === 'generated_query') {
-          totalNodes++;
-        }
-      }
-      
-      // Check if research is complete
-      if (latestStep.type === 'complete') {
-        return 100;
-      }
-      
-      // If no nodes yet, base progress on step types
-      if (totalNodes === 0) {
-        switch (latestStep.type) {
-          case 'generating_query':
-            return 10;
-          case 'searching':
-            return 20;
-          case 'search_complete':
-            return 30;
-          case 'processing_search_result':
-            return 40;
-          default:
-            return 5;
-        }
-      }
-      
-      // Calculate progress based on completed nodes vs total nodes
-      // Add 10% for starting and reserve 10% for final completion
-      const baseProgress = 10;
-      const maxProgress = 90;
-      const nodeProgress = totalNodes > 0 ? (completedNodes / totalNodes) * (maxProgress - baseProgress) : 0;
-      
-      return Math.min(Math.round(baseProgress + nodeProgress), maxProgress);
-    };
-    
-    const globalProgress = calculateGlobalProgress();
-    setProgress(globalProgress);
     
     // Update current step message based on latest step
     switch (latestStep.type) {
@@ -344,12 +286,11 @@ export default function ResearchProgress({ query, researchSteps }: ResearchProgr
       <div className="mb-8">
         <div className="flex justify-between mb-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentStep}</span>
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{progress}%</span>
         </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100}>
           <div 
-            className="bg-indigo-600 h-2.5 rounded-full transition-all duration-500 ease-out" 
-            style={{ width: `${progress}%` }}
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full animate-progress-infinite"
+            style={{ width: '40%' }}
           ></div>
         </div>
       </div>

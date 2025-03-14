@@ -478,12 +478,12 @@ ${Object.entries(responses)
                       <div className="mb-10 max-w-2xl mx-auto">
                         <div className="flex justify-between mb-2">
                           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Synthesizing research findings...</span>
-                          <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{reportProgress}%</span>
+                          <span className="sr-only">{reportProgress}%</span>
                         </div>
                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                           <div 
-                            className="h-2.5 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-indigo-500 to-purple-600"
-                            style={{ width: `${reportProgress}%` }}
+                            className="h-2.5 rounded-full animate-progress-infinite bg-gradient-to-r from-indigo-500 to-purple-600"
+                            style={{ width: '40%' }}
                           ></div>
                         </div>
                       </div>
