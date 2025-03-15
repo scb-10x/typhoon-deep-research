@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { type ResearchStep } from '@/lib/deep-research';
+import { useLanguage } from '@/utils/language-context';
 
 interface ResearchProgressProps {
   query: string;
@@ -62,6 +63,7 @@ function ResearchTimer({ startTime }: { startTime: number }) {
 }
 
 export default function ResearchProgress({ query, researchSteps, researchStartTime }: ResearchProgressProps) {
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState('Generating search queries...');
   const [researchTree, setResearchTree] = useState<ResearchNode>({
     id: '0',
@@ -322,20 +324,25 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
   };
   
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-        Researching: {query}
-      </h2>
-      
-      <div className="mb-8">
-        <div className="flex justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentStep}</span>
-          {researchStartTime && <ResearchTimer startTime={researchStartTime} />}
-        </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100}>
-          <div 
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full animate-progress-infinite"
-          ></div>
+    <div className="space-y-8">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          {t('researchProgress.title')}
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          {t('researchProgress.subtitle')}
+        </p>
+        
+        <div className="mb-8">
+          <div className="flex justify-between mb-2">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentStep}</span>
+            {researchStartTime && <ResearchTimer startTime={researchStartTime} />}
+          </div>
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100}>
+            <div 
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full animate-progress-infinite"
+            ></div>
+          </div>
         </div>
       </div>
       
@@ -351,9 +358,11 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
         </div>
       </div>
       
-      <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center">
-        Please wait while our AI conducts comprehensive research on your topic...
-      </p>
+      <div className="space-y-4">
+        <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center">
+          Please wait while our AI conducts comprehensive research on your topic...
+        </p>
+      </div>
     </div>
   );
 } 

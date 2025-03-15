@@ -7,9 +7,11 @@ import ResearchForm from '@/components/ResearchForm';
 import FeedbackQuestions from '@/components/FeedbackQuestions';
 import ResearchProgress from '@/components/ResearchProgress';
 import ResearchReport from '@/components/ResearchReport';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { generateFeedback } from '@/lib/feedback';
 import { deepResearch, writeFinalReport, type ResearchStep } from '@/lib/deep-research';
 import { detectLanguage } from '@/utils/language-detection';
+import { useLanguage } from '@/utils/language-context';
 
 // Define the learning type based on the ResearchStep
 type Learning = {
@@ -21,6 +23,7 @@ type Learning = {
 type ResearchStage = 'query' | 'feedback' | 'researching' | 'generating-report' | 'report';
 
 export default function HomePage() {
+  const { t } = useLanguage();
   const [activeStage, setActiveStage] = useState<ResearchStage>('query');
   const [completedStages, setCompletedStages] = useState<ResearchStage[]>([]);
   const [query, setQuery] = useState('');
@@ -80,13 +83,13 @@ export default function HomePage() {
     
     try {
       // Detect language from the query using the utility function
-      const language = detectLanguage(researchQuery);
-      setDetectedLanguage(language);
+      const detectedLang = detectLanguage(researchQuery);
+      setDetectedLanguage(detectedLang);
       
       // Use the real feedback generation function with await
       const feedbackResponse = await generateFeedback({
         query: researchQuery,
-        language,
+        language: detectedLang,
         numQuestions: 2,
       });
       
@@ -266,7 +269,7 @@ ${Object.entries(responses)
       {/* Header */}
       <header className="w-full bg-white dark:bg-gray-900 shadow-md backdrop-blur-lg bg-opacity-80 dark:bg-opacity-80 sticky top-0 z-10 flex-none">
         <div className="container mx-auto px-6 py-5">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-between">
             <div className="flex items-center">
               <BeakerIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
               <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80 transition-opacity">
@@ -275,6 +278,7 @@ ${Object.entries(responses)
                 <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 rounded-full">experimental beta</span>
               </a>
             </div>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
@@ -290,13 +294,13 @@ ${Object.entries(responses)
             </div>
             
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 relative inline-block">
-              Typhoon Deep Research
+              {t('home.title')}
               {/* Decorative Dots */}
               <span className="absolute -top-4 -right-4 w-3 h-3 bg-indigo-500 rounded-full opacity-50"></span>
               <span className="absolute -bottom-4 -left-4 w-3 h-3 bg-purple-500 rounded-full opacity-50"></span>
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto relative">
-              Discover insights through AI-powered research that explores topics in depth and synthesizes findings into comprehensive reports.
+              {t('home.subtitle')}
             </p>
           </div>
           
@@ -335,7 +339,7 @@ ${Object.entries(responses)
                   }`}>
                     1
                   </div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Research Query</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('sections.query')}</h2>
                 </div>
                 <div className="flex items-center">
                   {getSectionStatus('query') === 'completed' && (
@@ -355,7 +359,7 @@ ${Object.entries(responses)
                 <div className="p-6 border-t border-gray-100 dark:border-gray-700">
                   {getSectionStatus('query') === 'completed' ? (
                     <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600">
-                      <h3 className="text-md font-medium text-gray-900 dark:text-white mb-2">Your Research Query:</h3>
+                      <h3 className="text-md font-medium text-gray-900 dark:text-white mb-2">{t('researchForm.placeholder')}</h3>
                       <p className="text-gray-700 dark:text-gray-300">{query}</p>
                     </div>
                   ) : null}
@@ -396,7 +400,7 @@ ${Object.entries(responses)
                   }`}>
                     2
                   </div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Feedback Questions</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('sections.feedback')}</h2>
                 </div>
                 <div className="flex items-center">
                   {getSectionStatus('feedback') === 'completed' && (
@@ -460,7 +464,7 @@ ${Object.entries(responses)
                     3
                   </div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {activeStage === 'generating-report' ? 'Research Process & Report Generation' : 'Research Process'}
+                    {activeStage === 'generating-report' ? t('sections.researching') + ' & ' + t('sections.report') : t('sections.researching')}
                   </h2>
                 </div>
                 <div className="flex items-center">
@@ -486,12 +490,12 @@ ${Object.entries(responses)
                   {activeStage === 'generating-report' ? (
                     <div className="py-8">
                       <h2 className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 mb-8">
-                        Generating Research Report
+                        {t('researchProgress.generatingReport')}
                       </h2>
                       
                       <div className="mb-10 max-w-2xl mx-auto">
                         <div className="flex justify-between mb-2">
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Synthesizing research findings...</span>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('researchProgress.insights')}</span>
                           <span className="sr-only">{reportProgress}%</span>
                         </div>
                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
@@ -512,7 +516,7 @@ ${Object.entries(responses)
                       </div>
                       
                       <p className="text-center text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-                        Please wait while we compile your comprehensive research report with key insights and findings...
+                        {t('researchProgress.generatingReport')}
                       </p>
                     </div>
                   ) : (
@@ -533,16 +537,16 @@ ${Object.entries(responses)
               <div 
                 className={`p-5 flex justify-between items-center cursor-pointer ${
                   getSectionStatus('report') === 'active' 
-                    ? 'bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30' 
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md' 
                     : getSectionStatus('report') === 'completed'
-                      ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30'
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
                       : 'bg-gray-50 dark:bg-gray-800'
                 }`}
-                onClick={getSectionStatus('report') !== 'pending' ? toggleSection('report') : undefined}
+                onClick={toggleSection('report')}
                 role="button"
-                tabIndex={getSectionStatus('report') !== 'pending' ? 0 : -1}
+                tabIndex={0}
                 onKeyDown={(e) => {
-                  if (getSectionStatus('report') !== 'pending' && (e.key === 'Enter' || e.key === ' ')) {
+                  if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     toggleSection('report')(e as unknown as MouseEvent<HTMLDivElement>);
                   }
@@ -558,83 +562,39 @@ ${Object.entries(responses)
                   }`}>
                     4
                   </div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Research Report</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('sections.report')}</h2>
                 </div>
                 <div className="flex items-center">
                   {getSectionStatus('report') === 'completed' && (
                     <span className="text-sm font-medium text-green-600 dark:text-green-400 mr-3">Completed</span>
                   )}
-                  {getSectionStatus('report') !== 'pending' && (
-                    expandedSections.report ? (
-                      <ChevronUpIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                    ) : (
-                      <ChevronDownIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                    )
+                  {expandedSections.report ? (
+                    <ChevronUpIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                  ) : (
+                    <ChevronDownIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                   )}
                 </div>
               </div>
               
               <div className={`transition-all duration-300 ease-in-out ${
-                expandedSections.report && getSectionStatus('report') !== 'pending' 
-                  ? 'opacity-100' 
-                  : 'max-h-0 opacity-0 overflow-hidden'
+                expandedSections.report ? 'opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
               }`}>
                 <div className="p-6 border-t border-gray-100 dark:border-gray-700">
                   <ResearchReport 
                     report={report} 
-                    onNewResearch={startNewResearch}
-                    learnings={researchLearnings}
-                    prompt={enhancedQueryText}
-                    language={detectedLanguage}
-                    sourceUrls={sourceUrls}
+                    researchSteps={researchSteps}
+                    researchStartTime={researchStartTime}
                     researchDuration={researchDuration}
+                    researchLearnings={researchLearnings}
+                    sourceUrls={sourceUrls}
+                    enhancedQueryText={enhancedQueryText}
                   />
                 </div>
               </div>
             </div>
           </div>
-          
-          {/* Start New Research Button (Fixed at bottom) */}
-          {(completedStages.length > 0 || activeStage !== 'query') && (
-            <div className="fixed bottom-6 right-6 z-20">
-              <button
-                onClick={startNewResearch}
-                className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg transition-all duration-200 flex items-center transform hover:scale-105"
-              >
-                <SparklesIcon className="h-5 w-5 mr-2" />
-                Start New Research
-              </button>
-            </div>
-          )}
         </div>
       </main>
-      
-      {/* Footer */}
-      <footer className="w-full bg-white dark:bg-gray-900 py-6 border-t border-gray-200 dark:border-gray-800 flex-none mt-auto">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-gray-600 dark:text-gray-400">
-            Powered by <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600 hover:underline">Typhoon Research</a>
-          </p>
-        </div>
-      </footer>
-
-      <style jsx global>{`
-        @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </div>
   );
 }

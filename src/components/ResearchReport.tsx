@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import {
-  ArrowPathIcon,
   DocumentArrowDownIcon,
   ShareIcon,
   SparklesIcon,
@@ -13,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { writeFinalReport } from "@/lib/deep-research";
 import { languageCodeToName } from "@/utils/language-detection";
+import { useLanguage } from "@/utils/language-context";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
@@ -60,6 +60,7 @@ export default function ResearchReport({
   sourceUrls = {},
   researchDuration = null,
 }: ResearchReportProps) {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [currentReport, setCurrentReport] = useState(report);
   const [isRegenerating, setIsRegenerating] = useState(false);
@@ -175,14 +176,20 @@ export default function ResearchReport({
   };
 
   const handleCopyToClipboard = () => {
+    if (!reportRef.current) return;
+    
+    const reportText = reportRef.current.innerText;
+    
     navigator.clipboard
-      .writeText(currentReport)
+      .writeText(reportText)
       .then(() => {
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setTimeout(() => {
+          setCopied(false);
+        }, 2000);
       })
       .catch((err) => {
-        console.error("Failed to copy text: ", err);
+        console.error("Failed to copy report: ", err);
       });
   };
 
@@ -242,6 +249,10 @@ export default function ResearchReport({
     }
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="print:bg-white">
       {/* Action Bar - Hidden when printing */}
@@ -249,11 +260,11 @@ export default function ResearchReport({
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
             <BookmarkIcon className="h-6 w-6 mr-2 text-indigo-600 dark:text-indigo-400" />
-            Research Report
+            {t('researchReport.title')}
           </h2>
           {researchDuration && (
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Research completed in {formatDuration(researchDuration)}
+              {t('researchReport.completedIn')} {formatDuration(researchDuration)}
             </p>
           )}
         </div>
@@ -262,7 +273,7 @@ export default function ResearchReport({
             onClick={handleRegenerateReport}
             disabled={isRegenerating}
             className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-lg transition-colors duration-200 flex items-center shadow-sm"
-            aria-label="Regenerate report"
+            aria-label={t('researchReport.regenerateReport')}
           >
             {isRegenerating ? (
               <>
@@ -270,49 +281,36 @@ export default function ResearchReport({
                   className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"
                   aria-hidden="true"
                 ></div>
-                <span>Regenerating...</span>
+                <span>{t('researchReport.regenerating')}</span>
               </>
             ) : (
               <>
                 <SparklesIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-                <span>Regenerate</span>
+                <span>{t('researchReport.regenerate')}</span>
               </>
             )}
           </button>
           <button
             onClick={handlePrint}
             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors duration-200 flex items-center shadow-sm"
-            aria-label="Print report"
+            aria-label={t('researchReport.printReport')}
           >
             <PrinterIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-            <span>Print</span>
+            <span>{t('researchReport.print')}</span>
           </button>
           <button
             onClick={handleCopyToClipboard}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors duration-200 flex items-center shadow-sm"
-            aria-label={copied ? "Copied to clipboard" : "Copy to clipboard"}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            <ShareIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-            <span>{copied ? "Copied!" : "Copy"}</span>
+            <ShareIcon className="h-5 w-5 mr-2" />
+            {t('researchReport.copyReport')}
           </button>
           <button
             onClick={handleDownload}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors duration-200 flex items-center shadow-sm"
-            aria-label="Download report as markdown"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            <DocumentArrowDownIcon
-              className="h-5 w-5 mr-2"
-              aria-hidden="true"
-            />
-            <span>Download</span>
-          </button>
-          <button
-            onClick={onNewResearch}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200 flex items-center shadow-sm"
-            aria-label="Start new research"
-          >
-            <ArrowPathIcon className="h-5 w-5 mr-2" aria-hidden="true" />
-            <span>New Research</span>
+            <DocumentArrowDownIcon className="h-5 w-5 mr-2" />
+            {t('researchReport.downloadMarkdown')}
           </button>
         </div>
       </div>
@@ -326,7 +324,7 @@ export default function ResearchReport({
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 sticky top-24 shadow-sm">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="font-semibold text-gray-900 dark:text-white">
-                  Table of Contents
+                  {t('researchReport.tableOfContents')}
                 </h3>
                 <button
                   onClick={() => setShowToc(!showToc)}
@@ -382,13 +380,13 @@ export default function ResearchReport({
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
-                    <span>Generated on {new Date().toLocaleDateString()}</span>
+                    <span>{t('researchReport.generatedOn')} {new Date().toLocaleDateString()}</span>
                   </div>
                   <span className="text-xs bg-indigo-700/50 px-3 py-1 rounded-full text-white print:bg-gray-200 print:text-gray-800 font-medium">
                     {getLanguageName(language)}
                   </span>
                   <span className="text-xs bg-purple-700/50 px-3 py-1 rounded-full text-white print:bg-gray-200 print:text-gray-800 font-medium">
-                    Typhoon Research
+                    {t('researchReport.typhoonResearch')}
                   </span>
                 </div>
               </div>
@@ -688,9 +686,9 @@ export default function ResearchReport({
 
       {/* Back to top button - Hidden when printing */}
       <button
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-6 right-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 print:hidden"
-        aria-label="Back to top"
+        onClick={scrollToTop}
+        className="fixed bottom-6 right-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+        aria-label={t('researchReport.backToTop')}
       >
         <ChevronUpIcon className="h-6 w-6" />
       </button>
@@ -700,7 +698,7 @@ export default function ResearchReport({
         <button
           onClick={() => setShowToc(true)}
           className="fixed bottom-20 right-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden hidden lg:flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-          aria-label="Show table of contents"
+          aria-label={t('researchReport.showTableOfContents')}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -724,9 +722,7 @@ export default function ResearchReport({
         <button
           onClick={() => setShowToc(!showToc)}
           className="fixed bottom-6 left-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden lg:hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-          aria-label={
-            showToc ? "Hide table of contents" : "Show table of contents"
-          }
+          aria-label={showToc ? t('researchReport.hideTableOfContents') : t('researchReport.showTableOfContents')}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -825,6 +821,12 @@ export default function ResearchReport({
           color: rgb(129, 140, 248);
         }
       `}</style>
+
+      {copied && (
+        <div className="fixed bottom-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md">
+          {t('researchReport.reportCopied')}
+        </div>
+      )}
     </div>
   );
 }

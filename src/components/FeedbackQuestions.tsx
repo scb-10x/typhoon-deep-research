@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/utils/language-context';
 
 interface FeedbackQuestionsProps {
   questions: string[];
@@ -13,6 +14,7 @@ export default function FeedbackQuestions({
   onSubmit, 
   isLoading 
 }: FeedbackQuestionsProps) {
+  const { t } = useLanguage();
   const [responses, setResponses] = useState<Record<string, string>>(
     questions.reduce((acc, _, index) => {
       acc[`question-${index}`] = '';
@@ -37,11 +39,11 @@ export default function FeedbackQuestions({
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-        Help us understand your research needs
+        {t('feedbackQuestions.title')}
       </h2>
       
       <p className="text-gray-600 dark:text-gray-300 mb-6">
-        Please answer these follow-up questions to help our AI better understand your research needs.
+        {t('feedbackQuestions.subtitle')}
       </p>
       
       <form onSubmit={handleSubmit}>
@@ -92,7 +94,7 @@ export default function FeedbackQuestions({
                 <span>Processing...</span>
               </>
             ) : (
-              <span>Start Research</span>
+              <span>{t('feedbackQuestions.submit')}</span>
             )}
           </button>
         </div>

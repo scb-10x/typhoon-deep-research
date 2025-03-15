@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/utils/language-context';
 
 interface ResearchFormProps {
   onSubmit: (query: string) => void;
@@ -8,7 +9,11 @@ interface ResearchFormProps {
 }
 
 export default function ResearchForm({ onSubmit, isLoading }: ResearchFormProps) {
+  const { t, translations } = useLanguage();
   const [query, setQuery] = useState('');
+  
+  // Get example queries from translations
+  const exampleQueries = translations.researchForm.exampleQueries as string[];
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +25,7 @@ export default function ResearchForm({ onSubmit, isLoading }: ResearchFormProps)
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-        What would you like to research?
+        {t('researchForm.placeholder')}
       </h2>
       
       <form onSubmit={handleSubmit}>
@@ -29,21 +34,41 @@ export default function ResearchForm({ onSubmit, isLoading }: ResearchFormProps)
             htmlFor="query" 
             className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
-            Research Query
+            {t('sections.query')}
           </label>
           <textarea
             id="query"
             rows={4}
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            placeholder="Enter your research topic or question here..."
+            placeholder={t('researchForm.placeholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             required
             aria-required="true"
           />
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Be as specific or as broad as you need. Our AI will ask follow-up questions to clarify.
+          <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            {t('researchForm.examples')}
           </p>
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+            {exampleQueries.map((example, index) => (
+              <div 
+                key={index}
+                className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm flex items-center"
+                onClick={() => setQuery(example)}
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-4 w-4 mr-2 text-indigo-500" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                {example}
+              </div>
+            ))}
+          </div>
         </div>
         
         <div className="flex justify-end">
@@ -72,7 +97,7 @@ export default function ResearchForm({ onSubmit, isLoading }: ResearchFormProps)
                 <span>Processing...</span>
               </>
             ) : (
-              <span>Continue</span>
+              <span>{t('researchForm.submit')}</span>
             )}
           </button>
         </div>
