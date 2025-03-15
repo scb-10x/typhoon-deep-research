@@ -91,12 +91,14 @@ export type ResearchStep =
 // take an user query, return a list of SERP queries
 export async function generateSearchQueries({
   query,
+  userQuery,
   numQueries = 2,
   learnings,
   language,
   searchLanguage,
 }: {
   query: string;
+  userQuery?: string;
   language?: string;
   numQueries?: number;
   // optional, if provided, the research will continue from the last learning
@@ -116,6 +118,7 @@ export async function generateSearchQueries({
       },
       body: JSON.stringify({
         query,
+        userQuery: userQuery, // Use userQuery if provided, otherwise fallback to query
         numQueries,
         learnings,
         language: detectedLanguage,
@@ -299,6 +302,7 @@ function convertLearningsToObjects(learnings: string[]): Array<{learning: string
 // Main deep research function
 export async function deepResearch({
   query,
+  userQuery,
   breadth = 2,
   maxDepth = 2,
   languageCode,
@@ -309,6 +313,7 @@ export async function deepResearch({
   nodeId = "0",
 }: {
   query: string;
+  userQuery: string;
   breadth?: number;
   maxDepth?: number;
   /** The language of generated response */
@@ -353,6 +358,7 @@ export async function deepResearch({
 
     const queriesResponse = await generateSearchQueries({
       query,
+      userQuery,
       numQueries: breadth,
       learnings: objectLearnings,
       language: detectedLanguage,
@@ -442,6 +448,7 @@ export async function deepResearch({
           followUpPromises.push(
             deepResearch({
               query: followUpQuery.query,
+              userQuery,
               breadth: Math.floor(breadth / 2),
               maxDepth,
               languageCode: detectedLanguage,

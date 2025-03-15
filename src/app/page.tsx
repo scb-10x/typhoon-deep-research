@@ -154,6 +154,7 @@ ${Object.entries(responses)
       // Use the real deep research function
       const result = await deepResearch({
         query: enhancedQuery,
+        userQuery: enhancedQuery,
         breadth: 2,
         maxDepth: 3,
         languageCode: detectedLanguage,

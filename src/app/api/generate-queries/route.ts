@@ -11,6 +11,7 @@ import { extractResultFromThinking, safeJsonParse } from '@/utils/ai-response';
 // Define the request schema
 const requestSchema = z.object({
   query: z.string(),
+  userQuery: z.string(),
   numQueries: z.number().default(3),
   learnings: z.array(
     z.object({
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
   try {
     // Parse and validate the request body
     const body = await request.json();
-    const { query, numQueries, learnings, language, searchLanguage } = requestSchema.parse(body);
+    const { query, userQuery, numQueries, learnings, language, searchLanguage } = requestSchema.parse(body);
 
     // Define the response schema
     const responseSchema = z.object({
@@ -57,13 +58,15 @@ export async function POST(request: Request) {
         .join('\n')}\n\n`;
     }
 
-    prompt += `Given the following research query from the user, generate ${numQueries} search queries that would help answer the query comprehensively. Each query should focus on a different aspect of the research question.`;
+    prompt += `Given the current research query from the user, generate ${numQueries} search queries that would help answer the query comprehensively. Each query should focus on a different aspect of the research question.`;
 
     if (searchLanguage) {
       prompt += `\n\nIMPORTANT: Generate the search queries in ${searchLanguage}.`;
     }
 
-    prompt += `\n\n<query>${query}</query>\n\nYou MUST respond in JSON matching this JSON schema: ${jsonSchema}`;
+    prompt += `If current research query is not related, and learnings from previous searches are not helpful, generate a new query that is related to the user's query.`;
+
+    prompt += `\n\n<query>${query}</query>\n\n<user_query>${userQuery}</user_query>\n\nYou MUST respond in JSON matching this JSON schema: ${jsonSchema}`;
 
     if (language) {
       prompt += `\n\n${languagePrompt(language)}`;

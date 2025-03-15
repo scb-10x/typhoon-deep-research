@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       `<learnings>\n${formattedLearnings}\n</learnings>`,
       `IMPORTANT CONSTRAINTS AND GUIDELINES:`,
       
-      `1. USER ALIGNMENT (HIGHEST PRIORITY): Ensure the report directly addresses the user's original query. Focus on providing practical, actionable insights that are relevant to the user's needs. Organize information in a way that prioritizes what would be most valuable to someone asking this specific question. Begin with a brief prelude that helps orient the user to the topic and sets expectations for what they'll learn.`,
+      `1. USER ALIGNMENT (HIGHEST PRIORITY): Ensure the report directly addresses the user's original query in very hyper personalized way. Focus on providing practical, actionable insights that are relevant to the user's needs. Organize information in a way that prioritizes what would be most valuable to someone asking this specific question. Begin with a brief prelude that helps orient the user to the topic and sets expectations for what they'll learn, also adding detail insights from the learnings that are relevant to the user's query and catch the user's attention.`,
       
       `2. FACTUAL ACCURACY: Never make up facts or information. Only use information that is explicitly provided in the learnings. If you're uncertain about something, acknowledge the limitation rather than inventing details.`,
       

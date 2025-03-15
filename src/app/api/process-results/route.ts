@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       .join('\n\n');
 
     const prompt = [
-      `Given the following search query and results, extract ${numLearnings} key learnings and suggest ${numFollowUpQuestions} follow-up search queries.`,
+      `Given the following search query and results, extract ${numLearnings} key learnings and suggest ${numFollowUpQuestions} follow-up search queries. The learnings should be detailed in the level that experts would interested in.`,
       `<query>${query}</query>`,
       `<results>${resultsText}</results>`,
       `For each learning, include the URL of the source from which it was extracted. Each learning should be a complete, detailed sentence with specific information.`,
