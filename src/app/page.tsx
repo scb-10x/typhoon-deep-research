@@ -545,7 +545,7 @@ ${Object.entries(responses)
                       ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
                       : 'bg-gray-50 dark:bg-gray-800'
                 }`}
-                onClick={toggleSection('report')}
+                onClick={(getSectionStatus('report') === 'completed' || getSectionStatus('report') === 'active') ? toggleSection('report') : undefined}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -572,9 +572,9 @@ ${Object.entries(responses)
                     <span className="text-sm font-medium text-green-600 dark:text-green-400 mr-3">Completed</span>
                   )}
                   {expandedSections.report ? (
-                    <ChevronUpIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                  ) : (
-                    <ChevronDownIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                      <ChevronUpIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    ) : (
+                      <ChevronDownIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                   )}
                 </div>
               </div>
