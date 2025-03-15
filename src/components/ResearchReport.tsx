@@ -10,7 +10,7 @@ import {
   ChevronUpIcon,
   PrinterIcon,
 } from "@heroicons/react/24/outline";
-import { writeFinalReport } from "@/lib/deep-research";
+import { writeFinalReport, type ResearchStep } from "@/lib/deep-research";
 import { languageCodeToName } from "@/utils/language-detection";
 import { useLanguage } from "@/utils/language-context";
 import remarkGfm from "remark-gfm";
@@ -43,23 +43,36 @@ const Citation = ({ num, url }: { num: string; url?: string }) => {
 
 interface ResearchReportProps {
   report: string;
-  onNewResearch: () => void;
-  learnings: Array<{ learning: string; url: string; title?: string }>;
-  prompt: string;
+  onNewResearch?: () => void;
+  learnings?: Array<{ learning: string; url: string; title?: string }>;
+  researchLearnings?: Array<{ learning: string; url: string; title?: string }>;
+  prompt?: string;
+  enhancedQueryText?: string;
   language?: string;
   sourceUrls?: Record<string, string>; // Map of citation numbers to URLs
   researchDuration?: number | null; // Duration of research in milliseconds
+  researchStartTime?: number | null;
+  researchSteps?: ResearchStep[]; // Using the proper ResearchStep type
 }
 
 export default function ResearchReport({
   report,
-  onNewResearch,
-  learnings,
-  prompt,
+  onNewResearch = () => {},
+  learnings = [],
+  researchLearnings,
+  prompt = "",
+  enhancedQueryText,
   language = "en",
   sourceUrls = {},
   researchDuration = null,
+  researchStartTime,
+  researchSteps,
 }: ResearchReportProps) {
+  // These props are received but not directly used in this component
+  // They are kept for compatibility with the page.tsx component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _ = { researchStartTime, researchSteps };
+  
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [currentReport, setCurrentReport] = useState(report);
@@ -71,6 +84,11 @@ export default function ResearchReport({
   const [extractedSourceUrls, setExtractedSourceUrls] =
     useState<Record<string, string>>(sourceUrls);
   const reportRef = useRef<HTMLDivElement>(null);
+
+  // Use researchLearnings if provided, otherwise use learnings
+  const actualLearnings = researchLearnings || learnings;
+  // Use enhancedQueryText if provided, otherwise use prompt
+  const actualPrompt = enhancedQueryText || prompt;
 
   useEffect(() => {
     setCurrentReport(report);
@@ -194,15 +212,15 @@ export default function ResearchReport({
   };
 
   const handleRegenerateReport = async () => {
-    if (!learnings || learnings.length === 0) return;
+    if (!actualLearnings || actualLearnings.length === 0) return;
 
     setIsRegenerating(true);
 
     try {
       // Generate a new report with the same learnings
       const reportResponse = await writeFinalReport({
-        prompt,
-        learnings,
+        prompt: actualPrompt,
+        learnings: actualLearnings,
         language,
       });
 
@@ -687,10 +705,19 @@ export default function ResearchReport({
       {/* Back to top button - Hidden when printing */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+        className="fixed bottom-20 right-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
         aria-label={t('researchReport.backToTop')}
       >
         <ChevronUpIcon className="h-6 w-6" />
+      </button>
+
+      {/* Start New Research Button - Below Back to top button */}
+      <button
+        onClick={onNewResearch}
+        className="fixed bottom-6 right-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 print:hidden flex items-center justify-center"
+        aria-label={t('researchReport.startNew')}
+      >
+        <SparklesIcon className="h-6 w-6" />
       </button>
 
       {/* Floating TOC toggle button - Only visible on desktop when TOC is hidden */}

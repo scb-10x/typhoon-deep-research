@@ -224,6 +224,8 @@ ${Object.entries(responses)
     }
   };
   
+  // This function will be used when the "Start New Research" button is clicked
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const startNewResearch = () => {
     setActiveStage('query');
     setCompletedStages([]);
