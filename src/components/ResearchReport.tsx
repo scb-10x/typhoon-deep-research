@@ -467,58 +467,64 @@ export default function ResearchReport({
                       />
                     ),
                     p: ({ children, ...props }) => {
-                      // Check if children is a string and contains citation pattern
-                      if (
-                        typeof children === "string" &&
-                        children.match(/\[\d+\]/)
-                      ) {
-                        // Process string with citations
-                        const parts = [];
-                        let lastIndex = 0;
-                        const regex = /\[(\d+)\]/g;
-                        let match;
+                      // Process children to handle citations regardless of type
+                      const processChildren = (children: React.ReactNode): React.ReactNode[] | React.ReactNode => {
+                        // If children is a string, process it for citations
+                        if (typeof children === "string") {
+                          // Process string with citations
+                          const parts: React.ReactNode[] = [];
+                          let lastIndex = 0;
+                          const regex = /\[(\d+)\]/g;
+                          let match;
 
-                        while ((match = regex.exec(children)) !== null) {
-                          // Add text before the citation
-                          if (match.index > lastIndex) {
+                          while ((match = regex.exec(children)) !== null) {
+                            // Add text before the citation
+                            if (match.index > lastIndex) {
+                              parts.push(
+                                children.substring(lastIndex, match.index)
+                              );
+                            }
+
+                            // Add the citation component
                             parts.push(
-                              children.substring(lastIndex, match.index)
+                              <Citation
+                                key={`citation-${match.index}`}
+                                num={match[1]}
+                                url={extractedSourceUrls[match[1]]}
+                              />
                             );
+
+                            lastIndex = match.index + match[0].length;
                           }
 
-                          // Add the citation component
-                          parts.push(
-                            <Citation
-                              key={`citation-${match.index}`}
-                              num={match[1]}
-                              url={extractedSourceUrls[match[1]]}
-                            />
-                          );
+                          // Add any remaining text
+                          if (lastIndex < children.length) {
+                            parts.push(children.substring(lastIndex));
+                          }
 
-                          lastIndex = match.index + match[0].length;
+                          return parts;
                         }
-
-                        // Add any remaining text
-                        if (lastIndex < children.length) {
-                          parts.push(children.substring(lastIndex));
+                        
+                        // If children is an array, process each child
+                        if (Array.isArray(children)) {
+                          return children.map((child) => {
+                            if (typeof child === "string") {
+                              return processChildren(child);
+                            }
+                            return child;
+                          });
                         }
-
-                        return (
-                          <p
-                            className="my-4 leading-relaxed text-base lg:text-lg break-words"
-                            {...props}
-                          >
-                            {parts}
-                          </p>
-                        );
-                      }
+                        
+                        // If children is an object (React element), return it as is
+                        return children;
+                      };
 
                       return (
                         <p
                           className="my-4 leading-relaxed text-base lg:text-lg break-words"
                           {...props}
                         >
-                          {children}
+                          {processChildren(children)}
                         </p>
                       );
                     },
@@ -535,52 +541,61 @@ export default function ResearchReport({
                       />
                     ),
                     li: ({ children, ...props }) => {
-                      // Check if children is a string and contains citation pattern
-                      if (
-                        typeof children === "string" &&
-                        children.match(/\[\d+\]/)
-                      ) {
-                        // Process string with citations
-                        const parts = [];
-                        let lastIndex = 0;
-                        const regex = /\[(\d+)\]/g;
-                        let match;
+                      // Process children to handle citations regardless of type
+                      const processChildren = (children: React.ReactNode): React.ReactNode[] | React.ReactNode => {
+                        // If children is a string, process it for citations
+                        if (typeof children === "string") {
+                          // Process string with citations
+                          const parts: React.ReactNode[] = [];
+                          let lastIndex = 0;
+                          const regex = /\[(\d+)\]/g;
+                          let match;
 
-                        while ((match = regex.exec(children)) !== null) {
-                          // Add text before the citation
-                          if (match.index > lastIndex) {
+                          while ((match = regex.exec(children)) !== null) {
+                            // Add text before the citation
+                            if (match.index > lastIndex) {
+                              parts.push(
+                                children.substring(lastIndex, match.index)
+                              );
+                            }
+
+                            // Add the citation component
                             parts.push(
-                              children.substring(lastIndex, match.index)
+                              <Citation
+                                key={`citation-${match.index}`}
+                                num={match[1]}
+                                url={extractedSourceUrls[match[1]]}
+                              />
                             );
+
+                            lastIndex = match.index + match[0].length;
                           }
 
-                          // Add the citation component
-                          parts.push(
-                            <Citation
-                              key={`citation-${match.index}`}
-                              num={match[1]}
-                              url={extractedSourceUrls[match[1]]}
-                            />
-                          );
+                          // Add any remaining text
+                          if (lastIndex < children.length) {
+                            parts.push(children.substring(lastIndex));
+                          }
 
-                          lastIndex = match.index + match[0].length;
+                          return parts;
                         }
-
-                        // Add any remaining text
-                        if (lastIndex < children.length) {
-                          parts.push(children.substring(lastIndex));
+                        
+                        // If children is an array, process each child
+                        if (Array.isArray(children)) {
+                          return children.map((child) => {
+                            if (typeof child === "string") {
+                              return processChildren(child);
+                            }
+                            return child;
+                          });
                         }
-
-                        return (
-                          <li className="pl-2 break-words" {...props}>
-                            {parts}
-                          </li>
-                        );
-                      }
+                        
+                        // If children is an object (React element), return it as is
+                        return children;
+                      };
 
                       return (
                         <li className="pl-2 break-words" {...props}>
-                          {children}
+                          {processChildren(children)}
                         </li>
                       );
                     },

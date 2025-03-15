@@ -32,13 +32,16 @@ export async function POST(request: Request) {
       .join('\n\n');
 
     const reportPrompt = [
+      `Based on the following research query and learnings, write a comprehensive research report. The report should synthesize the learnings into a coherent narrative, highlighting key insights, patterns, and conclusions.`,
+      `<query>${prompt}</query>`,
+      `<learnings>\n${formattedLearnings}\n</learnings>`,
       `IMPORTANT CONSTRAINTS AND GUIDELINES:`,
       
       `1. USER ALIGNMENT (HIGHEST PRIORITY): Ensure the report directly addresses the user's original query. Focus on providing practical, actionable insights that are relevant to the user's needs. Organize information in a way that prioritizes what would be most valuable to someone asking this specific question. Begin with a brief prelude that helps orient the user to the topic and sets expectations for what they'll learn.`,
       
       `2. FACTUAL ACCURACY: Never make up facts or information. Only use information that is explicitly provided in the learnings. If you're uncertain about something, acknowledge the limitation rather than inventing details.`,
       
-      `3. CITATIONS: Use numbered citations like "[1]" to reference specific learnings. Each citation number should correspond to the index of the source in the learnings list. Include citations whenever you present specific facts, statistics, or direct information from the learnings.`,
+      `3. CITATIONS: Use numbered citations like "[1]" to reference specific learnings. Each citation number should correspond to the index of the source in the learnings list. Include citations whenever you present specific facts, statistics, or direct information from the learnings. IMPORTANT: Place citation numbers within the text immediately after the relevant information. Also add the same citation into source section at the end of the report.`,
       
       `4. BALANCED PERSPECTIVE: Present multiple viewpoints when the learnings contain different perspectives on a topic. Avoid bias and present information objectively.`,
       
@@ -53,19 +56,15 @@ export async function POST(request: Request) {
          - Return ONLY plain markdown text. DO NOT include any JSON, XML, or other structured data formats in your response.
          - Start with a # heading for the title.
          - The prelude should come immediately after the title, before diving into the executive summary and main content.
-         - At the end of the report, include a "Sources" section that lists all the sources used, with their corresponding numbers.
+         - At the end of the report, include a "Sources" section that lists all the sources (citations), with their corresponding numbers.
          - Example of a source citation in the text: "According to recent studies [1], the impact of climate change..."
          - Example of the Sources section at the end:
            # Sources
            [1] Source 1
            [2] Source 2
          `,
-         `Based on the following research query and learnings, write a comprehensive research report. The report should synthesize the learnings into a coherent narrative, highlighting key insights, patterns, and conclusions.`,
-         `<query>${prompt}</query>`,
-         `<learnings>\n${formattedLearnings}\n</learnings>`,
-      
       languagePrompt(language),
-    ].join('\n\n');
+    ].join('\n');
 
     // Use Typhoon API instead of OpenAI
     const result = await generateText({
@@ -143,11 +142,7 @@ export async function POST(request: Request) {
           if (sourceIndex >= 0 && sourceIndex < learnings.length) {
             const learning = learnings[sourceIndex];
             if (learning.url) {
-              if(learning.title) {
-                return `[${sourceMatch[1]}](${learning.url}) ${learning.title ? ` - ${learning.title}` : 'Link'}`;
-              } else{
-                return undefined
-              }
+              return `[${sourceMatch[1]}](${learning.url}) ${learning.title ? ` - ${learning.title}` : ` - ${learning.learning}`}`;
             }
           }
         }
@@ -201,7 +196,7 @@ export async function POST(request: Request) {
       }
       
       const sourcesSection = `\n\n${sourcesHeading}\n${learnings.map((learning, i) => 
-        `[${i + 1}]${learning.url ? '('+ learning.url + ')' : ''}${learning.title ? ` - ${learning.title}` : ''}`
+        `[${i + 1}]${learning.url ? '('+ learning.url + ')' : ''}${learning.title ? ` - ${learning.title}` : ` - ${learning.learning}`}`
       ).join('\n\n')}`;
       
       cleanReport = `${cleanReport}${sourcesSection}`;
