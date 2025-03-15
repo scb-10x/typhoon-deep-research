@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import type { MouseEvent } from 'react';
-import { ChevronDownIcon, ChevronUpIcon, SparklesIcon, BeakerIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronUpIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 import ResearchForm from '@/components/ResearchForm';
 import FeedbackQuestions from '@/components/FeedbackQuestions';
 import ResearchProgress from '@/components/ResearchProgress';
@@ -273,10 +274,10 @@ ${Object.entries(responses)
         <div className="container mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <BeakerIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
+              <Image src="/images/logo.svg" alt="Typhoon Logo" width={32} height={32} className="mr-3" />
               <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80 transition-opacity">
                 <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
-                <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2">Research</span>
+                <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2">Deep Research</span>
                 <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 rounded-full">experimental beta</span>
               </a>
             </div>

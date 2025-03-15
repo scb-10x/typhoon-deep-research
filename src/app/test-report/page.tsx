@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { writeFinalReport } from '@/lib/deep-research';
 import { mockWriteFinalReport } from '@/lib/mock-report';
 import ResearchReport from '@/components/ResearchReport';
-import { BeakerIcon } from '@heroicons/react/24/solid';
 
 export default function TestReportPage() {
   const [report, setReport] = useState('');
@@ -95,10 +95,10 @@ export default function TestReportPage() {
           <div className="container mx-auto px-6 py-5">
             <div className="flex items-center justify-center">
               <div className="flex items-center">
-                <BeakerIcon className="h-8 w-8 text-indigo-600 dark:text-indigo-400 mr-3" />
+                <Image src="/images/logo.svg" alt="Typhoon Logo" width={32} height={32} className="mr-3" />
                 <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80 transition-opacity">
                   <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
-                  <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2">Research</span>
+                  <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2">Deep Research</span>
                   <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 rounded-full">experimental beta</span>
                 </a>
               </div>
