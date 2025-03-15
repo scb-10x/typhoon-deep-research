@@ -350,7 +350,7 @@ ${Object.entries(responses)
               </div>
               
               <div className={`transition-all duration-300 ease-in-out ${
-                expandedSections.query ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+                expandedSections.query ? 'opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
               }`}>
                 <div className="p-6 border-t border-gray-100 dark:border-gray-700">
                   {getSectionStatus('query') === 'completed' ? (
@@ -414,7 +414,7 @@ ${Object.entries(responses)
               
               <div className={`transition-all duration-300 ease-in-out ${
                 expandedSections.feedback && getSectionStatus('feedback') !== 'pending' 
-                  ? 'max-h-[1000px] opacity-100' 
+                  ? 'opacity-100' 
                   : 'max-h-0 opacity-0 overflow-hidden'
               }`}>
                 <div className="p-6 border-t border-gray-100 dark:border-gray-700">
@@ -479,7 +479,7 @@ ${Object.entries(responses)
               
               <div className={`transition-all duration-300 ease-in-out ${
                 expandedSections.researching && getSectionStatus('researching') !== 'pending' 
-                  ? 'max-h-[2000px] opacity-100' 
+                  ? 'opacity-100' 
                   : 'max-h-0 opacity-0 overflow-hidden'
               }`}>
                 <div className="p-6 border-t border-gray-100 dark:border-gray-700">
@@ -577,7 +577,7 @@ ${Object.entries(responses)
               
               <div className={`transition-all duration-300 ease-in-out ${
                 expandedSections.report && getSectionStatus('report') !== 'pending' 
-                  ? 'max-h-[5000px] opacity-100' 
+                  ? 'opacity-100' 
                   : 'max-h-0 opacity-0 overflow-hidden'
               }`}>
                 <div className="p-6 border-t border-gray-100 dark:border-gray-700">
