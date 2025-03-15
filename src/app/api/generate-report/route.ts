@@ -103,6 +103,7 @@ export async function POST(request: Request) {
       '# References',
       '# REFERENCES',
       '# แหล่งข้อมูล', // Thai
+      '# แหล่งอ้างอิง', // Thai alternative
       '# อ้างอิง', // Thai alternative
       '# 参考文献', // Japanese
       '# 来源', // Chinese
