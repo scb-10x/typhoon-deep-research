@@ -497,7 +497,6 @@ ${Object.entries(responses)
                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                           <div 
                             className="h-2.5 rounded-full animate-progress-infinite bg-gradient-to-r from-indigo-500 to-purple-600"
-                            style={{ width: '40%' }}
                           ></div>
                         </div>
                       </div>

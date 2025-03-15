@@ -30,11 +30,20 @@ body {
   0% {
     transform: translateX(-100%);
   }
-  100% {
+  50% {
     transform: translateX(100%);
+  }
+  50.01% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(-100%);
   }
 }
 
 .animate-progress-infinite {
-  animation: progress-infinite 1.5s infinite linear;
+  animation: progress-infinite 2s infinite;
+  background: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 1), rgba(168, 85, 247, 1), rgba(168, 85, 247, 0.2));
+  background-size: 200% 100%;
+  width: 100% !important;
 }

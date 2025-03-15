@@ -335,7 +335,6 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100}>
           <div 
             className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full animate-progress-infinite"
-            style={{ width: '40%' }}
           ></div>
         </div>
       </div>
