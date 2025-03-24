@@ -154,7 +154,7 @@ ${Object.entries(responses)
         query: enhancedQuery,
         currentDepth: 0,
         breadth: 2,
-        maxDepth: 2,
+        maxDepth: process.env.MAX_DEPTH ? parseInt(process.env.MAX_DEPTH) : 2,
         languageCode: detectedLanguage,
         onProgress: (step) => {
           setResearchSteps(prev => [...prev, step]);

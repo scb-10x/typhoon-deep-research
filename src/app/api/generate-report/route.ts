@@ -76,7 +76,6 @@ export async function POST(request: Request) {
       languagePrompt(language),
     ].join('\n');
     
-    console.log(reportPrompt);
     // Use Typhoon API instead of OpenAI
     const result = await generateText({
       model: typhoon(process.env.AI_REASONING_MODEL || process.env.AI_MODEL || 'gpt-4-turbo'),

@@ -437,7 +437,6 @@ export async function deepResearch({
       results.forEach((result) => {
         result.followUpQueries.forEach((followUpQuery: { query: string, reasoning: string }, j: number) => {
           const followUpNodeId = `${result.childId}-${j}`;
-          console.log(`followUpNodeId: ${followUpNodeId}, currentDepth: ${currentDepth + 1}, maxDepth: ${maxDepth}`);
           // Add promise for recursive processing
           followUpPromises.push(
             deepResearch({
