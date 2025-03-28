@@ -45,7 +45,7 @@ Typhoon Deep Research is a modern Next.js application that leverages AI to condu
 3. Create a `.env.local` file in the root directory with your API keys:
    ```
    # OpenTyphoon API Key - Get one at https://opentyphoon.ai/
-   OPENAI_API_KEY=your_openai_api_key_here # opentyphoon.ai is openai compatible
+   TYPHOON_API_KEY=your_typhoon_api_key_here # opentyphoon.ai is openai compatible
    
    # AI Model configuration
    AI_MODEL=typhoon-v2-70b-instruct
@@ -66,7 +66,7 @@ Typhoon Deep Research is a modern Next.js application that leverages AI to condu
 
 ## Environment Variables
 
-- `OPENAI_API_KEY`: Your API key for Typhoon AI
+- `TYPHOON_API_KEY`: Your API key for OpenTyphoon AI
 - `AI_MODEL`: The default AI model to use for general tasks
 - `AI_REASONING_MODEL`: The AI model to use for reasoning-intensive tasks like report generation and query formulation
 - `TAVILY_API_KEY`: Your API key for Tavily web search

@@ -4,8 +4,8 @@ import { RecursiveCharacterTextSplitter } from './text-splitter';
 const MinChunkSize = 140;
 const encoder = getEncoding('cl100k_base');
 
-// Default context size for OpenAI models
-const DEFAULT_CONTEXT_SIZE = 128000;
+// Default context size for Typhoon models
+const DEFAULT_CONTEXT_SIZE = 32000;
 
 // trim prompt to maximum context size
 export function trimPrompt(prompt: string, contextSize: number = DEFAULT_CONTEXT_SIZE) {
