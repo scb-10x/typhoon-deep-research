@@ -62,7 +62,7 @@ export async function safeJsonParse<T>(
   text: string, 
   schema: string,
   retryCount: number = 1,
-  model: string = process.env.AI_MODEL || 'gpt-4-turbo'
+  model: string = process.env.AI_MODEL || 'typhoon-v2.1-12b-instruct'
 ): Promise<T> {
   // First, try to parse the JSON directly
   try {
