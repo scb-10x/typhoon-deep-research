@@ -15,7 +15,7 @@ interface ResearchNode {
   query: string;
   status: 'pending' | 'searching' | 'processing' | 'complete' | 'error';
   children: ResearchNode[];
-  learnings?: Array<{learning: string; url: string; title?: string}>;
+  learnings?: Array<{ learning: string; url: string; title?: string }>;
   depth: number;
 }
 
@@ -43,11 +43,11 @@ function ResearchTimer({ startTime }: { startTime: number }) {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
+
     const formattedHours = hours.toString().padStart(2, '0');
     const formattedMinutes = (minutes % 60).toString().padStart(2, '0');
     const formattedSeconds = (seconds % 60).toString().padStart(2, '0');
-    
+
     if (hours > 0) {
       return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     } else {
@@ -56,7 +56,7 @@ function ResearchTimer({ startTime }: { startTime: number }) {
   };
 
   return (
-    <div className="text-sm font-medium text-indigo-600 dark:text-indigo-400 ml-2">
+    <div className="text-sm font-medium text-indigo-600 ml-2">
       Time elapsed: {formatElapsedTime(elapsedTime)}
     </div>
   );
@@ -72,14 +72,14 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
     children: [],
     depth: 0
   });
-  
+
   // Process research steps to update the UI
   useEffect(() => {
     if (researchSteps.length === 0) return;
-    
+
     // Get the latest step
     const latestStep = researchSteps[researchSteps.length - 1];
-    
+
     // Update current step message based on latest step
     switch (latestStep.type) {
       case 'generating_query':
@@ -106,7 +106,7 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
       default:
         setCurrentStep('Researching...');
     }
-    
+
     // Build the research tree from the steps
     const rootNode: ResearchNode = {
       id: '0',
@@ -115,17 +115,17 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
       children: [],
       depth: 0
     };
-    
+
     const nodeMap = new Map<string, ResearchNode>();
     nodeMap.set('0', rootNode);
-    
+
     // First pass: Create all nodes and establish parent-child relationships
     for (const step of researchSteps) {
       if (step.type === 'generated_query' && 'nodeId' in step) {
         // Calculate node depth based on ID segments
         const nodeSegments = step.nodeId.split('-');
         const depth = nodeSegments.length - 1;
-        
+
         // Create a new node if it doesn't exist
         if (!nodeMap.has(step.nodeId)) {
           const newNode: ResearchNode = {
@@ -135,10 +135,10 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
             children: [],
             depth
           };
-          
+
           // Find or create parent nodes as needed
           const parentId = nodeSegments.slice(0, -1).join('-') || '0';
-          
+
           // Ensure parent exists
           if (!nodeMap.has(parentId) && parentId !== '0') {
             // Create placeholder parent if it doesn't exist yet
@@ -151,7 +151,7 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
               depth: parentDepth
             };
             nodeMap.set(parentId, parentNode);
-            
+
             // Connect to grandparent if needed
             const grandparentId = nodeSegments.slice(0, -2).join('-') || '0';
             const grandparent = nodeMap.get(grandparentId);
@@ -159,7 +159,7 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
               grandparent.children.push(parentNode);
             }
           }
-          
+
           // Connect to parent
           const parent = nodeMap.get(parentId);
           if (parent) {
@@ -169,18 +169,18 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
               parent.children.push(newNode);
             }
           }
-          
+
           // Add to node map
           nodeMap.set(step.nodeId, newNode);
         }
       }
     }
-    
+
     // Second pass: Update node statuses and content
     for (const step of researchSteps) {
       if ('nodeId' in step && step.nodeId) {
         const node = nodeMap.get(step.nodeId);
-        
+
         if (node) {
           // Update node status based on step type
           switch (step.type) {
@@ -194,14 +194,14 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
               node.status = 'processing';
               // Add learnings if available
               if (step.result?.learnings && step.result.learnings.length > 0) {
-                node.learnings = step.result.learnings as Array<{learning: string; url: string; title?: string}>;
+                node.learnings = step.result.learnings as Array<{ learning: string; url: string; title?: string }>;
               }
               break;
             case 'node_complete':
               node.status = 'complete';
               // Add learnings if available
               if (step.result?.learnings && step.result.learnings.length > 0) {
-                node.learnings = step.result.learnings as Array<{learning: string; url: string; title?: string}>;
+                node.learnings = step.result.learnings as Array<{ learning: string; url: string; title?: string }>;
               }
               break;
             case 'error':
@@ -217,15 +217,15 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
         }
       }
     }
-    
+
     // Update the research tree
     setResearchTree(rootNode);
   }, [query, researchSteps]);
-  
+
   const getStatusIcon = (status: ResearchNode['status']) => {
     switch (status) {
       case 'pending':
-        return <div className="w-4 h-4 rounded-full bg-gray-300 dark:bg-gray-600" aria-hidden="true"></div>;
+        return <div className="w-4 h-4 rounded-full bg-gray-300" aria-hidden="true"></div>;
       case 'searching':
         return (
           <div className="w-4 h-4 flex items-center justify-center" aria-label="Searching">
@@ -256,29 +256,29 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
         );
     }
   };
-  
+
   const getDepthColor = (depth: number) => {
     const colors = [
-      'border-indigo-200 dark:border-indigo-800',
-      'border-purple-200 dark:border-purple-800',
-      'border-blue-200 dark:border-blue-800',
-      'border-teal-200 dark:border-teal-800',
-      'border-green-200 dark:border-green-800'
+      'border-indigo-200',
+      'border-purple-200',
+      'border-blue-200',
+      'border-teal-200',
+      'border-green-200'
     ];
     return colors[depth % colors.length];
   };
-  
+
   const renderNode = (node: ResearchNode, level = 0) => {
     const borderColor = getDepthColor(node.depth);
-    
+
     return (
       <div key={node.id} className={`ml-4 ${node.depth > 0 ? 'mt-4' : ''}`}>
         <div className="flex items-start mb-2">
           <div className="mr-2 mt-1">{getStatusIcon(node.status)}</div>
           <div className="flex-1">
-            <div className={`font-medium text-gray-800 dark:text-gray-200 ${node.depth > 0 ? 'text-sm' : ''}`}>
+            <div className={`font-medium text-gray-800 ${node.depth > 0 ? 'text-sm' : ''}`}>
               {node.depth > 0 && (
-                <span className="inline-block px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs rounded mr-2">
+                <span className="inline-block px-2 py-0.5 bg-gray-100 text-xs rounded mr-2">
                   Depth {node.depth}
                 </span>
               )}
@@ -287,16 +287,16 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
             {node.learnings && node.learnings.length > 0 && (
               <div className={`mt-3 space-y-2 pl-4 border-l-2 ${borderColor}`}>
                 {node.learnings.map((learning, i) => (
-                  <div key={i} className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-2 rounded-md">
+                  <div key={i} className="text-sm text-gray-600 bg-gray-50 p-2 rounded-md">
                     {typeof learning === 'string' ? learning : (
                       <>
                         {learning.learning}
                         {learning.url && (
                           <div className="mt-1">
-                            <a 
-                              href={learning.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
+                            <a
+                              href={learning.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-blue-500 hover:underline text-xs flex items-center"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -315,41 +315,41 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
           </div>
         </div>
         {node.children.length > 0 && (
-          <div className="ml-6 mt-2 border-l border-gray-200 dark:border-gray-700 pl-4">
+          <div className="ml-6 mt-2 border-l border-gray-200 pl-4">
             {node.children.map(child => renderNode(child, level + 1))}
           </div>
         )}
       </div>
     );
   };
-  
+
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
           {t('researchProgress.title')}
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
+        <p className="text-gray-600 mb-6">
           {t('researchProgress.subtitle')}
         </p>
-        
+
         <div className="mb-8">
           <div className="flex justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentStep}</span>
+            <span className="text-sm font-medium text-gray-700">{currentStep}</span>
             {researchStartTime && <ResearchTimer startTime={researchStartTime} />}
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100}>
-            <div 
+          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={100}>
+            <div
               className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full animate-progress-infinite"
             ></div>
           </div>
         </div>
       </div>
-      
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+
+      <div className="bg-gray-50 rounded-lg p-4 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           Research Tree
-          <span className="ml-2 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded-full">
+          <span className="ml-2 text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full">
             Showing all depths
           </span>
         </h3>
@@ -357,9 +357,9 @@ export default function ResearchProgress({ query, researchSteps, researchStartTi
           {renderNode(researchTree)}
         </div>
       </div>
-      
+
       <div className="space-y-4">
-        <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center">
+        <p className="text-sm text-gray-500 italic text-center">
           Please wait while our AI conducts comprehensive research on your topic...
         </p>
       </div>
