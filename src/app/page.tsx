@@ -11,6 +11,7 @@ import { generateFeedback } from '@/lib/feedback';
 import { deepResearch, writeFinalReport, type ResearchStep } from '@/lib/deep-research';
 import { detectLanguage } from '@/utils/language-detection';
 import { useLanguage } from '@/utils/language-context';
+import AiDisclaimer from '@/components/AiDisclaimer';
 
 // Define the learning type based on the ResearchStep
 type Learning = {
@@ -300,10 +301,10 @@ ${Object.entries(responses)
             <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-lg relative z-10">
               <div
                 className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('query') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
-                    : getSectionStatus('query') === 'completed'
-                      ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                      : 'bg-gray-50'
+                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
+                  : getSectionStatus('query') === 'completed'
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50'
+                    : 'bg-gray-50'
                   }`}
                 onClick={toggleSection('query')}
                 role="button"
@@ -317,10 +318,10 @@ ${Object.entries(responses)
               >
                 <div className="flex items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('query') === 'active'
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                      : getSectionStatus('query') === 'completed'
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                        : 'bg-gray-200 text-gray-500'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : getSectionStatus('query') === 'completed'
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                      : 'bg-gray-200 text-gray-500'
                     }`}>
                     1
                   </div>
@@ -357,10 +358,10 @@ ${Object.entries(responses)
               }`}>
               <div
                 className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('feedback') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
-                    : getSectionStatus('feedback') === 'completed'
-                      ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                      : 'bg-gray-50'
+                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
+                  : getSectionStatus('feedback') === 'completed'
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50'
+                    : 'bg-gray-50'
                   }`}
                 onClick={getSectionStatus('feedback') !== 'pending' ? toggleSection('feedback') : undefined}
                 role="button"
@@ -374,10 +375,10 @@ ${Object.entries(responses)
               >
                 <div className="flex items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('feedback') === 'active'
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                      : getSectionStatus('feedback') === 'completed'
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                        : 'bg-gray-200 text-gray-500'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : getSectionStatus('feedback') === 'completed'
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                      : 'bg-gray-200 text-gray-500'
                     }`}>
                     2
                   </div>
@@ -398,8 +399,8 @@ ${Object.entries(responses)
               </div>
 
               <div className={`transition-all duration-300 ease-in-out ${expandedSections.feedback && getSectionStatus('feedback') !== 'pending'
-                  ? 'opacity-100'
-                  : 'max-h-0 opacity-0 overflow-hidden'
+                ? 'opacity-100'
+                : 'max-h-0 opacity-0 overflow-hidden'
                 }`}>
                 <div className="p-6 border-t border-gray-100">
                   <FeedbackQuestions
@@ -416,10 +417,10 @@ ${Object.entries(responses)
               }`}>
               <div
                 className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('researching') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
-                    : getSectionStatus('researching') === 'completed'
-                      ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                      : 'bg-gray-50'
+                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
+                  : getSectionStatus('researching') === 'completed'
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50'
+                    : 'bg-gray-50'
                   }`}
                 onClick={getSectionStatus('researching') !== 'pending' ? toggleSection('researching') : undefined}
                 role="button"
@@ -433,10 +434,10 @@ ${Object.entries(responses)
               >
                 <div className="flex items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('researching') === 'active'
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                      : getSectionStatus('researching') === 'completed'
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                        : 'bg-gray-200 text-gray-500'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : getSectionStatus('researching') === 'completed'
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                      : 'bg-gray-200 text-gray-500'
                     }`}>
                     3
                   </div>
@@ -459,8 +460,8 @@ ${Object.entries(responses)
               </div>
 
               <div className={`transition-all duration-300 ease-in-out ${expandedSections.researching && getSectionStatus('researching') !== 'pending'
-                  ? 'opacity-100'
-                  : 'max-h-0 opacity-0 overflow-hidden'
+                ? 'opacity-100'
+                : 'max-h-0 opacity-0 overflow-hidden'
                 }`}>
                 <div className="p-6 border-t border-gray-100">
                   {activeStage === 'generating-report' ? (
@@ -511,10 +512,10 @@ ${Object.entries(responses)
               }`}>
               <div
                 className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('report') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                    : getSectionStatus('report') === 'completed'
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                      : 'bg-gray-50'
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                  : getSectionStatus('report') === 'completed'
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                    : 'bg-gray-50'
                   }`}
                 onClick={(getSectionStatus('report') === 'completed' || getSectionStatus('report') === 'active') ? toggleSection('report') : undefined}
                 role="button"
@@ -528,10 +529,10 @@ ${Object.entries(responses)
               >
                 <div className="flex items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('report') === 'active'
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                      : getSectionStatus('report') === 'completed'
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                        : 'bg-gray-200 text-gray-500'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : getSectionStatus('report') === 'completed'
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
+                      : 'bg-gray-200 text-gray-500'
                     }`}>
                     4
                   </div>
@@ -565,6 +566,11 @@ ${Object.entries(responses)
               </div>
             </div>
           </div>
+        </div>
+
+        {/* AI Disclaimer */}
+        <div className="max-w-4xl lg:max-w-5xl mx-auto mt-12">
+          <AiDisclaimer />
         </div>
       </main>
     </div>

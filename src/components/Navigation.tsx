@@ -24,7 +24,6 @@ export default function Navigation() {
             <Image src="/images/logo.svg" alt="Typhoon Logo" width={32} height={32} className="mr-3" />
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
             <span className="text-2xl font-bold text-gray-800 ml-2">Deep Research</span>
-            <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full">experimental beta</span>
           </Link>
         </div>
 
@@ -32,8 +31,8 @@ export default function Navigation() {
           <Link
             href="/"
             className={`flex items-center text-sm ${isActive('/')
-                ? 'text-indigo-600 font-medium'
-                : 'text-gray-600 hover:text-indigo-600'
+              ? 'text-indigo-600 font-medium'
+              : 'text-gray-600 hover:text-indigo-600'
               }`}
           >
             <HomeIcon className="h-5 w-5 mr-1" />
@@ -43,8 +42,8 @@ export default function Navigation() {
           <Link
             href="/how-it-works"
             className={`flex items-center text-sm ${isActive('/how-it-works')
-                ? 'text-indigo-600 font-medium'
-                : 'text-gray-600 hover:text-indigo-600'
+              ? 'text-indigo-600 font-medium'
+              : 'text-gray-600 hover:text-indigo-600'
               }`}
           >
             <InformationCircleIcon className="h-5 w-5 mr-1" />

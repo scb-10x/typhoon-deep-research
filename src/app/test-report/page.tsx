@@ -99,7 +99,6 @@ export default function TestReportPage() {
                 <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80 transition-opacity">
                   <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
                   <span className="text-2xl font-bold text-gray-800 ml-2">Deep Research</span>
-                  <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full">experimental beta</span>
                 </a>
               </div>
             </div>
@@ -177,13 +176,15 @@ export default function TestReportPage() {
               </p>
             </div>
 
-            <ResearchReport
-              report={report}
-              onNewResearch={() => setReport('')}
-              learnings={sampleLearnings}
-              prompt={samplePrompt}
-              language="th"
-            />
+            <div className="mt-8">
+              <ResearchReport
+                report={report}
+                onNewResearch={() => setReport('')}
+                learnings={sampleLearnings}
+                prompt={samplePrompt}
+                language="th"
+              />
+            </div>
           </div>
         )}
       </div>

@@ -5,14 +5,68 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import { FaGithub, FaDiscord, FaXTwitter } from "react-icons/fa6";
 import { SiHuggingface } from "react-icons/si";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
+// Define base URL for canonical links
+const baseUrl = "https://research.opentyphoon.ai";
+
 export const metadata: Metadata = {
-  title: "Typhoon Deep Research",
-  description: "An advanced AI-powered research tool that helps you conduct deep, comprehensive research on any topic.",
+  title: {
+    template: '%s | Typhoon Deep Research',
+    default: 'Typhoon Deep Research - AI-Powered Comprehensive Research Tool',
+  },
+  description: "Experience Typhoon's advanced AI research capabilities. Conduct deep, comprehensive research on any topic with our powerful multi-step research and analysis engine.",
+  keywords: ["Typhoon AI", "AI research", "deep research", "comprehensive research", "AI-powered research", "Typhoon demo", "research assistant"],
+  authors: [{ name: "Typhoon AI", url: "https://opentyphoon.ai" }],
+  creator: "Typhoon AI",
+  publisher: "Typhoon AI",
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
+  },
+  metadataBase: new URL(baseUrl),
+  alternates: {
+    canonical: new URL(baseUrl),
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: baseUrl,
+    siteName: 'Typhoon Deep Research',
+    title: 'Typhoon Deep Research - AI-Powered Comprehensive Research Tool',
+    description: "Experience Typhoon's advanced AI research capabilities. Conduct deep, comprehensive research on any topic with our powerful multi-step research and analysis engine.",
+    images: [
+      {
+        url: `${baseUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'Typhoon Deep Research',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@opentyphoon',
+    creator: '@opentyphoon',
+    title: 'Typhoon Deep Research - AI-Powered Comprehensive Research Tool',
+    description: "Experience Typhoon's advanced AI research capabilities. Conduct deep, comprehensive research on any topic with our powerful multi-step research and analysis engine.",
+    images: `${baseUrl}/twitter-image.png`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+    },
   },
 };
 
@@ -25,6 +79,35 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" />
+        <Script
+          id="json-ld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "Typhoon Deep Research",
+              "applicationCategory": "ResearchApplication",
+              "operatingSystem": "Web",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "description": "Experience Typhoon's advanced AI research capabilities. Conduct deep, comprehensive research on any topic with our powerful multi-step research and analysis engine.",
+              "url": "https://opentyphoon.ai",
+              "author": {
+                "@type": "Organization",
+                "name": "Typhoon AI",
+                "url": "https://opentyphoon.ai"
+              },
+              "potentialAction": {
+                "@type": "UseAction",
+                "target": "https://research.opentyphoon.ai"
+              }
+            })
+          }}
+        />
       </head>
       <body className={inter.className}>
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
