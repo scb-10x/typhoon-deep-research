@@ -1,28 +1,24 @@
 # Typhoon Deep Research
 
-Typhoon Deep Research is a modern Next.js application that leverages AI to conduct comprehensive research on any topic. The application follows a structured research process:
+## Introduction
 
-1. **User Query**: Users submit their research topic or question.
-2. **Follow-up Questions**: The AI asks clarifying questions to better understand the research needs.
-3. **Deep Research**: The AI conducts thorough research, exploring multiple angles of the topic.
-4. **Research Report**: Users receive a comprehensive report with key insights and findings.
+[Typhoon Deep Research](https://deep-research.apps.opentyphoon.ai) is a modern application that leverages AI to conduct comprehensive research on any topic. It streamlines the research process by asking clarifying questions, conducting thorough investigations, and generating comprehensive reports with key insights.
 
-## Features
+This project is part of [Typhoon Application Week](https://apps.opentyphoon.ai), showcasing the capabilities of the [Typhoon platform](https://opentyphoon.ai). Please note that this application is not maintained for production use and is not production-ready. Use at your own risk.
 
-- Modern, responsive UI built with Next.js and Tailwind CSS
-- AI-powered research algorithm that explores topics in depth
-- Interactive research progress visualization
-- Markdown-based research reports with download capability
-- Compatible with OpenTyphoon and OpenAI endpoints
+## Highlighted Features + Typhoon Integration
 
-## Tech Stack
+- **Intelligent Query Refinement**: Typhoon generates follow-up questions to narrow down research scope and understand user intent more precisely.
 
-- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
-- **AI Integration**: Typhoon AI API (OpenAI-compatible), Vercel AI SDK
-- **Styling**: Tailwind CSS, Heroicons
-- **Content Rendering**: React Markdown
+- **Multi-perspective Research**: Powered by Typhoon's reasoning capabilities, the application explores topics from multiple angles to provide comprehensive coverage.
 
-## Getting Started
+- **Structured Research Reports**: Typhoon organizes findings into coherent, well-structured reports with clear sections and insights.
+
+- **Interactive Research Progress**: Real-time visualization of the research process powered by Typhoon's streaming capabilities.
+
+- **Markdown-based Reports**: Generate and download well-formatted research reports with Typhoon's text generation capabilities.
+
+## Getting Started (Local Development)
 
 ### Prerequisites
 
@@ -33,7 +29,7 @@ Typhoon Deep Research is a modern Next.js application that leverages AI to condu
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/scb-10x/typhoon-deep-research2
+   git clone https://github.com/yourusername/typhoon-deep-research2
    cd typhoon-deep-research2
    ```
 
@@ -45,7 +41,7 @@ Typhoon Deep Research is a modern Next.js application that leverages AI to condu
 3. Create a `.env.local` file in the root directory with your API keys:
    ```
    # OpenTyphoon API Key - Get one at https://opentyphoon.ai/
-   TYPHOON_API_KEY=your_typhoon_api_key_here # opentyphoon.ai is openai compatible
+   TYPHOON_API_KEY=your_typhoon_api_key_here
    
    # AI Model configuration
    AI_MODEL=typhoon-v2-70b-instruct
@@ -58,54 +54,18 @@ Typhoon Deep Research is a modern Next.js application that leverages AI to condu
 4. Start the development server:
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-## Environment Variables
-
-- `TYPHOON_API_KEY`: Your API key for OpenTyphoon AI
-- `AI_MODEL`: The default AI model to use for general tasks
-- `AI_REASONING_MODEL`: The AI model to use for reasoning-intensive tasks like report generation and query formulation
-- `TAVILY_API_KEY`: Your API key for Tavily web search
-
-## Project Structure
-
-```
-typhoon-research/
-├── public/              # Static assets
-├── src/
-│   ├── app/             # Next.js App Router pages
-│   ├── components/      # React components
-│   ├── lib/             # Core library code
-│   │   ├── ai/          # AI-related utilities
-│   │   ├── deep-research.ts  # Main research algorithm
-│   │   ├── feedback.ts  # Follow-up questions generation
-│   │   └── prompt.ts    # AI prompt templates
-│   └── utils/           # Utility functions
-├── .env.local           # Environment variables (create this file)
-├── next.config.js       # Next.js configuration
-├── package.json         # Project dependencies
-├── tailwind.config.js   # Tailwind CSS configuration
-└── tsconfig.json        # TypeScript configuration
-```
-
-## Deployment
-
-This application can be easily deployed to Vercel:
-
-```bash
-npm run build
-# or
-vercel deploy
-```
-
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) - see the LICENSE file for details.
 
-## Acknowledgements
+## Connect With Us
 
-- The research algorithm is based on the deep-research library. [[1](https://github.com/dzhng/deep-research)] [[2](https://github.com/AnotiaWang/deep-research-web-ui)]
+- Website: [Typhoon](https://opentyphoon.ai)
+- GitHub: [SCB 10X](https://github.com/scb-10x)
+- Hugging Face: [SCB 10X](https://huggingface.co/scb10x)
+- Discord: [Join our community](https://discord.com/invite/9F6nrFXyNt)
+- X (formerly Twitter): [Typhoon](https://x.com/opentyphoon)
