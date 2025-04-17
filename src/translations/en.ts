@@ -34,7 +34,7 @@ export default {
     exampleQueries: [
       'What are the latest advancements in quantum computing?',
       'How does climate change affect marine ecosystems?',
-      'What are the most effective strategies for digital marketing in 2024?',
+      'What are the most effective strategies for digital marketing in 2025?',
       'What is the history and cultural significance of Thai cuisine?',
     ],
   },
