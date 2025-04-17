@@ -56,10 +56,10 @@ export default function TestReportPage() {
   const generateTestReport = async () => {
     setIsGenerating(true);
     setError('');
-    
+
     try {
       let reportResponse;
-      
+
       if (useMock) {
         // Use the mock report generator
         reportResponse = await mockWriteFinalReport({
@@ -75,7 +75,7 @@ export default function TestReportPage() {
           language: 'th', // Test with Thai language
         });
       }
-      
+
       // Get the report text
       const reportText = await reportResponse.text;
       setReport(reportText);
@@ -88,49 +88,48 @@ export default function TestReportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 p-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <header className="w-full bg-white dark:bg-gray-900 shadow-md backdrop-blur-lg bg-opacity-80 dark:bg-opacity-80 sticky top-0 z-10 flex-none">
+        <header className="w-full bg-white shadow-md backdrop-blur-lg bg-opacity-80 sticky top-0 z-10 flex-none">
           <div className="container mx-auto px-6 py-5">
             <div className="flex items-center justify-center">
               <div className="flex items-center">
                 <Image src="/images/logo.svg" alt="Typhoon Logo" width={32} height={32} className="mr-3" />
                 <a href="http://opentyphoon.ai/" target="_blank" rel="noopener noreferrer" className="flex items-center hover:opacity-80 transition-opacity">
                   <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
-                  <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2">Deep Research</span>
-                  <span className="ml-2 text-xs font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 rounded-full">experimental beta</span>
+                  <span className="text-2xl font-bold text-gray-800 ml-2">Deep Research</span>
                 </a>
               </div>
             </div>
           </div>
         </header>
-        
+
         <h1 className="text-3xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
           Test Report Generation
         </h1>
-        
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Generate Test Report</h2>
-          
+
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">Generate Test Report</h2>
+
           <div className="mb-6">
-            <h3 className="text-md font-medium text-gray-900 dark:text-white mb-2">Sample Prompt:</h3>
-            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <p className="text-gray-700 dark:text-gray-300">{samplePrompt}</p>
+            <h3 className="text-md font-medium text-gray-900 mb-2">Sample Prompt:</h3>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-gray-700">{samplePrompt}</p>
             </div>
           </div>
-          
+
           <div className="mb-6">
-            <h3 className="text-md font-medium text-gray-900 dark:text-white mb-2">Sample Learnings:</h3>
-            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300">
+            <h3 className="text-md font-medium text-gray-900 mb-2">Sample Learnings:</h3>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <ul className="list-disc pl-5 text-gray-700">
                 {sampleLearnings.map((learning, index) => (
                   <li key={index} className="mb-1">{learning.learning}</li>
                 ))}
               </ul>
             </div>
           </div>
-          
+
           <div className="mb-6">
             <label className="flex items-center">
               <input
@@ -139,12 +138,12 @@ export default function TestReportPage() {
                 onChange={() => setUseMock(!useMock)}
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
-              <span className="ml-2 text-gray-700 dark:text-gray-300">
+              <span className="ml-2 text-gray-700">
                 Use mock report generator (for debugging)
               </span>
             </label>
           </div>
-          
+
           <button
             onClick={generateTestReport}
             disabled={isGenerating}
@@ -159,31 +158,33 @@ export default function TestReportPage() {
               <span>Generate Test Report</span>
             )}
           </button>
-          
+
           {error && (
-            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg">
+            <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
               {error}
             </div>
           )}
         </div>
-        
+
         {report && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Generated Report</h2>
-            
-            <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <p className="text-gray-700 dark:text-gray-300">
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Generated Report</h2>
+
+            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+              <p className="text-gray-700">
                 <strong>Report Source:</strong> {useMock ? 'Mock Generator' : 'API Generator'}
               </p>
             </div>
-            
-            <ResearchReport 
-              report={report} 
-              onNewResearch={() => setReport('')}
-              learnings={sampleLearnings}
-              prompt={samplePrompt}
-              language="th"
-            />
+
+            <div className="mt-8">
+              <ResearchReport
+                report={report}
+                onNewResearch={() => setReport('')}
+                learnings={sampleLearnings}
+                prompt={samplePrompt}
+                language="th"
+              />
+            </div>
           </div>
         )}
       </div>

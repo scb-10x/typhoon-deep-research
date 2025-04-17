@@ -20,7 +20,7 @@ import rehypeSlug from "rehype-slug";
 // Citation component to properly render citation numbers
 const Citation = ({ num, url }: { num: string; url?: string }) => {
   const content = (
-    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300 rounded-full">
+    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-800 rounded-full">
       [{num}]
     </span>
   );
@@ -57,7 +57,7 @@ interface ResearchReportProps {
 
 export default function ResearchReport({
   report,
-  onNewResearch = () => {},
+  onNewResearch = () => { },
   learnings = [],
   researchLearnings,
   prompt = "",
@@ -72,7 +72,7 @@ export default function ResearchReport({
   // They are kept for compatibility with the page.tsx component
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _ = { researchStartTime, researchSteps };
-  
+
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [currentReport, setCurrentReport] = useState(report);
@@ -195,9 +195,9 @@ export default function ResearchReport({
 
   const handleCopyToClipboard = () => {
     if (!reportRef.current) return;
-    
+
     const reportText = reportRef.current.innerText;
-    
+
     navigator.clipboard
       .writeText(reportText)
       .then(() => {
@@ -253,11 +253,11 @@ export default function ResearchReport({
   // Format duration into a readable string
   const formatDuration = (ms: number): string => {
     if (ms < 1000) return `${ms}ms`;
-    
+
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
     } else if (minutes > 0) {
@@ -276,12 +276,12 @@ export default function ResearchReport({
       {/* Action Bar - Hidden when printing */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4 print:hidden">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-            <BookmarkIcon className="h-6 w-6 mr-2 text-indigo-600 dark:text-indigo-400" />
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+            <BookmarkIcon className="h-6 w-6 mr-2 text-indigo-600" />
             {t('researchReport.title')}
           </h2>
           {researchDuration && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-gray-500 mt-1">
               {t('researchReport.completedIn')} {formatDuration(researchDuration)}
             </p>
           )}
@@ -310,7 +310,7 @@ export default function ResearchReport({
           </button>
           <button
             onClick={handlePrint}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg transition-colors duration-200 flex items-center shadow-sm"
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors duration-200 flex items-center shadow-sm"
             aria-label={t('researchReport.printReport')}
           >
             <PrinterIcon className="h-5 w-5 mr-2" aria-hidden="true" />
@@ -318,14 +318,14 @@ export default function ResearchReport({
           </button>
           <button
             onClick={handleCopyToClipboard}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <ShareIcon className="h-5 w-5 mr-2" />
             {t('researchReport.copyReport')}
           </button>
           <button
             onClick={handleDownload}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <DocumentArrowDownIcon className="h-5 w-5 mr-2" />
             {t('researchReport.downloadMarkdown')}
@@ -339,14 +339,14 @@ export default function ResearchReport({
           <div
             className={`lg:w-1/4 print:hidden ${showToc ? "block" : "hidden"}`}
           >
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 sticky top-24 shadow-sm">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 sticky top-24 shadow-sm">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white">
+                <h3 className="font-semibold text-gray-900">
                   {t('researchReport.tableOfContents')}
                 </h3>
                 <button
                   onClick={() => setShowToc(!showToc)}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="text-gray-500 hover:text-gray-700"
                 >
                   <ChevronUpIcon className="h-5 w-5" />
                 </button>
@@ -357,7 +357,7 @@ export default function ResearchReport({
                     <li key={index} className={`pl-${(heading.level - 1) * 4}`}>
                       <button
                         onClick={() => scrollToHeading(heading.id)}
-                        className="text-left hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors w-full truncate py-1"
+                        className="text-left hover:text-indigo-600 transition-colors w-full truncate py-1"
                       >
                         {heading.text}
                       </button>
@@ -371,7 +371,7 @@ export default function ResearchReport({
 
         {/* Report Content */}
         <div className={headings.length > 0 && showToc ? "lg:w-3/4" : "w-full"}>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm print:shadow-none print:border-0">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm print:shadow-none print:border-0">
             {/* Report Header */}
             <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-8 text-white print:bg-white print:text-black relative overflow-hidden">
               {/* Decorative elements */}
@@ -412,7 +412,7 @@ export default function ResearchReport({
 
             {/* Report Content with Enhanced Markdown */}
             <div className="p-6 md:p-8" ref={reportRef}>
-              <article className="prose dark:prose-invert lg:prose-lg xl:prose-xl max-w-none print:max-w-full prose-headings:font-bold prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-md overflow-hidden">
+              <article className="prose lg:prose-lg xl:prose-xl max-w-none print:max-w-full prose-headings:font-bold prose-p:text-gray-700 prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-md overflow-hidden">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw, rehypeSlug]}
@@ -447,9 +447,9 @@ export default function ResearchReport({
                         )
                       ) {
                         return (
-                          <div className="mt-12 pt-6 border-t-2 border-gray-200 dark:border-gray-700">
+                          <div className="mt-12 pt-6 border-t-2 border-gray-200">
                             <h1
-                              className="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-100 break-words"
+                              className="text-2xl lg:text-3xl font-bold text-gray-800 break-words"
                               {...props}
                             >
                               {children}
@@ -459,26 +459,26 @@ export default function ResearchReport({
                       }
                       return (
                         <h1
-                          className="text-3xl lg:text-4xl font-extrabold mt-10 mb-6 pb-2 border-b-0 text-gray-900 dark:text-white bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent break-words"
+                          className="text-3xl lg:text-4xl font-extrabold mt-10 mb-6 pb-2 border-b-0 text-gray-900 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent break-words"
                           {...props}
                         />
                       );
                     },
                     h2: ({ ...props }) => (
                       <h2
-                        className="text-2xl lg:text-3xl font-bold mt-8 mb-4 pb-2 border-b-0 relative pl-4 text-gray-800 dark:text-gray-100 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-500 before:rounded-full break-words"
+                        className="text-2xl lg:text-3xl font-bold mt-8 mb-4 pb-2 border-b-0 relative pl-4 text-gray-800 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-500 before:rounded-full break-words"
                         {...props}
                       />
                     ),
                     h3: ({ ...props }) => (
                       <h3
-                        className="text-xl lg:text-2xl font-semibold mt-6 mb-3 text-gray-800 dark:text-gray-100 break-words"
+                        className="text-xl lg:text-2xl font-semibold mt-6 mb-3 text-gray-800 break-words"
                         {...props}
                       />
                     ),
                     h4: ({ ...props }) => (
                       <h4
-                        className="text-lg lg:text-xl font-medium mt-4 mb-2 text-gray-800 dark:text-gray-100 break-words"
+                        className="text-lg lg:text-xl font-medium mt-4 mb-2 text-gray-800 break-words"
                         {...props}
                       />
                     ),
@@ -520,7 +520,7 @@ export default function ResearchReport({
 
                           return parts;
                         }
-                        
+
                         // If children is an array, process each child
                         if (Array.isArray(children)) {
                           return children.map((child) => {
@@ -530,7 +530,7 @@ export default function ResearchReport({
                             return child;
                           });
                         }
-                        
+
                         // If children is an object (React element), return it as is
                         return children;
                       };
@@ -594,7 +594,7 @@ export default function ResearchReport({
 
                           return parts;
                         }
-                        
+
                         // If children is an array, process each child
                         if (Array.isArray(children)) {
                           return children.map((child) => {
@@ -604,7 +604,7 @@ export default function ResearchReport({
                             return child;
                           });
                         }
-                        
+
                         // If children is an object (React element), return it as is
                         return children;
                       };
@@ -617,35 +617,35 @@ export default function ResearchReport({
                     },
                     blockquote: ({ ...props }) => (
                       <blockquote
-                        className="my-6 pl-6 py-1 border-l-4 border-indigo-500 dark:border-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 rounded-r-lg italic text-gray-700 dark:text-gray-300 break-words"
+                        className="my-6 pl-6 py-1 border-l-4 border-indigo-500 bg-indigo-50 rounded-r-lg italic text-gray-700 break-words"
                         {...props}
                       />
                     ),
                     a: ({ ...props }) => (
                       <a
-                        className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline transition-colors duration-200 break-words"
+                        className="text-indigo-600 font-medium hover:underline transition-colors duration-200 break-words"
                         target="_blank"
                         rel="noopener"
                         {...props}
                       />
                     ),
                     table: ({ ...props }) => (
-                      <div className="my-8 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm max-w-full">
+                      <div className="my-8 overflow-x-auto rounded-lg border border-gray-200 shadow-sm max-w-full">
                         <table
-                          className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-auto"
+                          className="min-w-full divide-y divide-gray-200 table-auto"
                           {...props}
                         />
                       </div>
                     ),
                     th: ({ ...props }) => (
                       <th
-                        className="bg-gray-50 dark:bg-gray-800 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 break-words"
+                        className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 break-words"
                         {...props}
                       />
                     ),
                     td: ({ ...props }) => (
                       <td
-                        className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-800 break-words"
+                        className="px-6 py-4 text-sm text-gray-700 border-b border-gray-100 break-words"
                         {...props}
                       />
                     ),
@@ -655,12 +655,12 @@ export default function ResearchReport({
                     }: { inline?: boolean } & React.HTMLProps<HTMLElement>) =>
                       inline ? (
                         <code
-                          className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-indigo-600 dark:text-indigo-400 break-words"
+                          className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-indigo-600 break-words"
                           {...props}
                         />
                       ) : (
                         <div className="relative my-6 rounded-lg overflow-hidden shadow-md">
-                          <div className="bg-gray-800 dark:bg-black px-4 py-2 text-xs text-gray-200 flex justify-between items-center">
+                          <div className="bg-gray-800 px-4 py-2 text-xs text-gray-200 flex justify-between items-center">
                             <span>Code</span>
                             <button
                               onClick={() => {
@@ -673,7 +673,7 @@ export default function ResearchReport({
                             </button>
                           </div>
                           <code
-                            className="block bg-gray-50 dark:bg-gray-900 p-4 text-sm font-mono overflow-x-auto border-t border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words"
+                            className="block bg-gray-50 p-4 text-sm font-mono overflow-x-auto border-t border-gray-200 text-gray-800 whitespace-pre-wrap break-words"
                             {...props}
                           />
                         </div>
@@ -688,7 +688,7 @@ export default function ResearchReport({
                     ),
                     hr: ({ ...props }) => (
                       <hr
-                        className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent"
+                        className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"
                         {...props}
                       />
                     ),
@@ -705,7 +705,7 @@ export default function ResearchReport({
       {/* Back to top button - Hidden when printing */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-20 right-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+        className="fixed bottom-20 right-6 bg-white text-indigo-600 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden flex items-center justify-center border border-gray-200 hover:bg-gray-50"
         aria-label={t('researchReport.backToTop')}
       >
         <ChevronUpIcon className="h-6 w-6" />
@@ -724,7 +724,7 @@ export default function ResearchReport({
       {headings.length > 0 && !showToc && (
         <button
           onClick={() => setShowToc(true)}
-          className="fixed bottom-20 right-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden hidden lg:flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          className="fixed bottom-20 right-6 bg-white text-indigo-600 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden hidden lg:flex items-center justify-center border border-gray-200 hover:bg-gray-50"
           aria-label={t('researchReport.showTableOfContents')}
         >
           <svg
@@ -748,7 +748,7 @@ export default function ResearchReport({
       {headings.length > 0 && (
         <button
           onClick={() => setShowToc(!showToc)}
-          className="fixed bottom-6 left-6 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden lg:hidden flex items-center justify-center border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+          className="fixed bottom-6 left-6 bg-white text-indigo-600 rounded-full p-3 shadow-lg transition-all duration-200 print:hidden lg:hidden flex items-center justify-center border border-gray-200 hover:bg-gray-50"
           aria-label={showToc ? t('researchReport.hideTableOfContents') : t('researchReport.showTableOfContents')}
         >
           <svg
@@ -839,13 +839,6 @@ export default function ResearchReport({
           font-size: 0.75rem;
           font-weight: 500;
           white-space: nowrap;
-        }
-
-        /* Dark mode for citations */
-        .dark .prose p a[href^="#citation"],
-        .dark .prose li a[href^="#citation"] {
-          background-color: rgba(79, 70, 229, 0.2);
-          color: rgb(129, 140, 248);
         }
       `}</style>
 

@@ -172,13 +172,13 @@ const MarkdownComponents = {
     <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600" {...props} />
   ),
   h2: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h2 className="text-3xl font-bold mt-12 mb-6 text-indigo-600 dark:text-indigo-400" {...props} />
+    <h2 className="text-3xl font-bold mt-12 mb-6 text-indigo-600" {...props} />
   ),
   h3: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h3 className="text-2xl font-semibold mt-8 mb-4 text-gray-800 dark:text-gray-200" {...props} />
+    <h3 className="text-2xl font-semibold mt-8 mb-4 text-gray-800" {...props} />
   ),
   p: (props: React.HTMLProps<HTMLParagraphElement>) => (
-    <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed" {...props} />
+    <p className="text-lg text-gray-700 mb-6 leading-relaxed" {...props} />
   ),
   ul: (props: React.HTMLProps<HTMLUListElement>) => (
     <ul className="mb-6 space-y-2" {...props} />
@@ -198,8 +198,8 @@ const MarkdownComponents = {
             const prefix = parts[1];
             const rest = parts.slice(2).join('**');
             return (
-              <li className="text-gray-700 dark:text-gray-300" {...props}>
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400">{prefix}:</span>
+              <li className="text-gray-700" {...props}>
+                <span className="font-semibold text-indigo-600">{prefix}:</span>
                 {rest}
               </li>
             );
@@ -207,36 +207,36 @@ const MarkdownComponents = {
         }
       }
     } catch (_) {
-        console.log('error', _)
+      console.log('error', _)
       // Fallback to default rendering if there's an error
     }
-    return <li className="text-gray-700 dark:text-gray-300" {...props}>{children}</li>;
+    return <li className="text-gray-700" {...props}>{children}</li>;
   },
   strong: (props: React.HTMLProps<HTMLElement>) => (
-    <strong className="font-semibold text-indigo-600 dark:text-indigo-400" {...props} />
+    <strong className="font-semibold text-indigo-600" {...props} />
   ),
 };
 
 export default function HowItWorks() {
   const { language, t } = useLanguage();
-  
+
   // Select the appropriate markdown content based on language
   const markdownContent = language === 'th' ? thaiContent : englishContent;
-  
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob"></div>
       <div className="absolute top-40 right-10 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-2000"></div>
-      
-      <div className="prose prose-lg dark:prose-invert max-w-none relative z-10">
+
+      <div className="prose prose-lg max-w-none relative z-10">
         <ReactMarkdown components={MarkdownComponents}>
           {markdownContent}
         </ReactMarkdown>
-        
+
         <div className="mt-12 mb-8 text-center">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
           >
             {t('howItWorks.startResearching')}
@@ -244,54 +244,54 @@ export default function HowItWorks() {
           </Link>
         </div>
       </div>
-      
+
       {/* Process visualization */}
       <div className="mt-16 mb-12 relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl"></div>
         <div className="relative p-8 rounded-xl">
-          <h3 className="text-2xl font-bold text-center mb-8 text-indigo-600 dark:text-indigo-400">
+          <h3 className="text-2xl font-bold text-center mb-8 text-indigo-600">
             {language === 'th' ? 'กระบวนการวิจัยเชิงลึก' : 'Deep Research Process'}
           </h3>
-          
+
           <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 md:space-x-4">
             <div className="flex-1 text-center p-4">
-              <div className="w-16 h-16 mx-auto bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">1</span>
+              <div className="w-16 h-16 mx-auto bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-indigo-600">1</span>
               </div>
-              <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+              <h4 className="font-semibold mb-2 text-gray-800">
                 {language === 'th' ? 'คำถาม' : 'Query'}
               </h4>
             </div>
-            
-            <div className="hidden md:block w-8 h-1 bg-indigo-200 dark:bg-indigo-800"></div>
-            
+
+            <div className="hidden md:block w-8 h-1 bg-indigo-200"></div>
+
             <div className="flex-1 text-center p-4">
-              <div className="w-16 h-16 mx-auto bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">2</span>
+              <div className="w-16 h-16 mx-auto bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-indigo-600">2</span>
               </div>
-              <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+              <h4 className="font-semibold mb-2 text-gray-800">
                 {language === 'th' ? 'ค้นหา' : 'Search'}
               </h4>
             </div>
-            
-            <div className="hidden md:block w-8 h-1 bg-indigo-200 dark:bg-indigo-800"></div>
-            
+
+            <div className="hidden md:block w-8 h-1 bg-indigo-200"></div>
+
             <div className="flex-1 text-center p-4">
-              <div className="w-16 h-16 mx-auto bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">3</span>
+              <div className="w-16 h-16 mx-auto bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-indigo-600">3</span>
               </div>
-              <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+              <h4 className="font-semibold mb-2 text-gray-800">
                 {language === 'th' ? 'วิเคราะห์' : 'Analyze'}
               </h4>
             </div>
-            
-            <div className="hidden md:block w-8 h-1 bg-indigo-200 dark:bg-indigo-800"></div>
-            
+
+            <div className="hidden md:block w-8 h-1 bg-indigo-200"></div>
+
             <div className="flex-1 text-center p-4">
-              <div className="w-16 h-16 mx-auto bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">4</span>
+              <div className="w-16 h-16 mx-auto bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-indigo-600">4</span>
               </div>
-              <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+              <h4 className="font-semibold mb-2 text-gray-800">
                 {language === 'th' ? 'รายงาน' : 'Report'}
               </h4>
             </div>

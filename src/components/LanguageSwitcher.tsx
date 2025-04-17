@@ -29,7 +29,7 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white rounded-md border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-md border border-gray-300 hover:bg-gray-50 transition-colors"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
@@ -38,8 +38,8 @@ export default function LanguageSwitcher() {
       </button>
 
       {isOpen && (
-        <div 
-          className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10"
+        <div
+          className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="language-menu"
@@ -52,11 +52,10 @@ export default function LanguageSwitcher() {
                   setLanguage(lang.code);
                   setIsOpen(false);
                 }}
-                className={`block w-full text-left px-4 py-2 text-sm ${
-                  language === lang.code
-                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                }`}
+                className={`block w-full text-left px-4 py-2 text-sm ${language === lang.code
+                    ? 'bg-gray-100 text-gray-900'
+                    : 'text-gray-700 hover:bg-gray-50'
+                  }`}
                 role="menuitem"
               >
                 {lang.name}
