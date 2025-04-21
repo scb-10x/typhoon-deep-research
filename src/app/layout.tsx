@@ -10,7 +10,7 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 // Define base URL for canonical links
-const baseUrl = "https://research.opentyphoon.ai";
+const baseUrl = "https://deep-research.apps.opentyphoon.ai";
 
 export const metadata: Metadata = {
   title: {
@@ -100,7 +100,7 @@ export default function RootLayout({
               },
               "potentialAction": {
                 "@type": "UseAction",
-                "target": "https://research.opentyphoon.ai"
+                "target": "https://deep-research.apps.opentyphoon.ai"
               }
             })
           }}
