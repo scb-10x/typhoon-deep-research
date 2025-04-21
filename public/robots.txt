@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://research.opentyphoon.ai/sitemap.xml 
+Sitemap: https://deep-research.apps.opentyphoon.ai/sitemap.xml 
