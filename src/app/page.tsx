@@ -271,306 +271,151 @@ ${Object.entries(responses)
 
       {/* Header is now in the Navigation component */}
 
-      <main className="container mx-auto px-6 py-12 relative flex-grow">
-        <div className="max-w-4xl lg:max-w-5xl mx-auto">
-          {/* Hero Section with Decorative Elements */}
-          <div className="mb-12 text-center relative">
-            {/* Decorative Lines */}
-            <div className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 -z-10">
-              <div className="h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent"></div>
-              <div className="h-px mt-4 bg-gradient-to-r from-transparent via-purple-500/20 to-transparent"></div>
+      <main className="container mx-auto px-6 py-10 max-w-5xl" id="deep-research-main">
+        <div className="my-16 space-y-16">
+          {/* Query Section */}
+          <section id="query-section" className="rounded-xl border border-gray-200 shadow-sm overflow-hidden bg-white">
+            <div
+              className="p-4 cursor-pointer bg-gray-50 border-b border-gray-200 flex justify-between items-center"
+              onClick={toggleSection('query')}
+              id="query-section-header"
+            >
+              <div className="flex items-center">
+                <div
+                  className={`${completedStages.includes('query') ? 'bg-green-500' : activeStage === 'query' ? 'bg-blue-500' : 'bg-gray-300'
+                    } h-5 w-5 rounded-full mr-3 transition-colors duration-200 flex items-center justify-center text-white text-xs`}
+                >
+                  {completedStages.includes('query') ? '✓' : '1'}
+                </div>
+                <h2 className="text-lg font-semibold text-gray-800">{t('sections.query')}</h2>
+              </div>
+              {expandedSections.query ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+              )}
             </div>
+            {expandedSections.query && (
+              <div className="p-6" id="query-section-content">
+                <ResearchForm onSubmit={handleQuerySubmit} isLoading={isLoading} />
+              </div>
+            )}
+          </section>
 
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 relative inline-block">
-              {t('home.title')}
-              {/* Decorative Dots */}
-              <span className="absolute -top-4 -right-4 w-3 h-3 bg-indigo-500 rounded-full opacity-50"></span>
-              <span className="absolute -bottom-4 -left-4 w-3 h-3 bg-purple-500 rounded-full opacity-50"></span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto relative">
-              {t('home.subtitle')}
-            </p>
-          </div>
-
-          {/* Vertical Research Process */}
-          <div className="space-y-6 relative">
-            {/* Connecting Line */}
-            <div className="absolute left-[39px] top-[72px] bottom-16 w-0.5 bg-gradient-to-b from-indigo-500 to-purple-500 z-0 hidden md:block"></div>
-
-            {/* Query Section */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-lg relative z-10">
+          {/* Feedback Questions Section */}
+          {(completedStages.includes('query') || activeStage === 'feedback' || completedStages.includes('feedback')) && (
+            <section id="feedback-section" className="rounded-xl border border-gray-200 shadow-sm overflow-hidden bg-white">
               <div
-                className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('query') === 'active'
-                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
-                  : getSectionStatus('query') === 'completed'
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                    : 'bg-gray-50'
-                  }`}
-                onClick={toggleSection('query')}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleSection('query')(e as unknown as MouseEvent<HTMLDivElement>);
-                  }
-                }}
+                className="p-4 cursor-pointer bg-gray-50 border-b border-gray-200 flex justify-between items-center"
+                onClick={toggleSection('feedback')}
+                id="feedback-section-header"
               >
                 <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('query') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                    : getSectionStatus('query') === 'completed'
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                      : 'bg-gray-200 text-gray-500'
-                    }`}>
-                    1
+                  <div
+                    className={`${completedStages.includes('feedback')
+                      ? 'bg-green-500'
+                      : activeStage === 'feedback'
+                        ? 'bg-blue-500'
+                        : 'bg-gray-300'
+                      } h-5 w-5 rounded-full mr-3 transition-colors duration-200 flex items-center justify-center text-white text-xs`}
+                  >
+                    {completedStages.includes('feedback') ? '✓' : '2'}
                   </div>
-                  <h2 className="text-lg font-semibold text-gray-900">{t('sections.query')}</h2>
+                  <h2 className="text-lg font-semibold text-gray-800">{t('sections.feedback')}</h2>
                 </div>
-                <div className="flex items-center">
-                  {getSectionStatus('query') === 'completed' && (
-                    <span className="text-sm font-medium text-green-600 mr-3">Completed</span>
-                  )}
-                  {expandedSections.query ? (
-                    <ChevronUpIcon className="h-5 w-5 text-gray-500" />
-                  ) : (
-                    <ChevronDownIcon className="h-5 w-5 text-gray-500" />
-                  )}
-                </div>
+                {expandedSections.feedback ? (
+                  <ChevronUpIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+                ) : (
+                  <ChevronDownIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+                )}
               </div>
-
-              <div className={`transition-all duration-300 ease-in-out ${expandedSections.query ? 'opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
-                }`}>
-                <div className="p-6 border-t border-gray-100">
-                  {getSectionStatus('query') === 'completed' ? (
-                    <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
-                      <h3 className="text-md font-medium text-gray-900 mb-2">{t('researchForm.placeholder')}</h3>
-                      <p className="text-gray-700">{query}</p>
-                    </div>
-                  ) : null}
-                  <ResearchForm onSubmit={handleQuerySubmit} isLoading={isLoading} />
+              {expandedSections.feedback && (
+                <div className="p-6" id="feedback-section-content">
+                  <FeedbackQuestions questions={questions} onSubmit={handleFeedbackSubmit} isLoading={isLoading} />
                 </div>
-              </div>
-            </div>
+              )}
+            </section>
+          )}
 
-            {/* Feedback Section */}
-            <div className={`bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-lg relative z-10 ${getSectionStatus('feedback') === 'pending' ? 'opacity-70' : ''
-              }`}>
+          {/* Research Progress Section */}
+          {(completedStages.includes('feedback') || activeStage === 'researching' || activeStage === 'generating-report') && (
+            <section id="research-progress-section" className="rounded-xl border border-gray-200 shadow-sm overflow-hidden bg-white">
               <div
-                className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('feedback') === 'active'
-                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
-                  : getSectionStatus('feedback') === 'completed'
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                    : 'bg-gray-50'
-                  }`}
-                onClick={getSectionStatus('feedback') !== 'pending' ? toggleSection('feedback') : undefined}
-                role="button"
-                tabIndex={getSectionStatus('feedback') !== 'pending' ? 0 : -1}
-                onKeyDown={(e) => {
-                  if (getSectionStatus('feedback') !== 'pending' && (e.key === 'Enter' || e.key === ' ')) {
-                    e.preventDefault();
-                    toggleSection('feedback')(e as unknown as MouseEvent<HTMLDivElement>);
-                  }
-                }}
+                className="p-4 cursor-pointer bg-gray-50 border-b border-gray-200 flex justify-between items-center"
+                onClick={toggleSection('researching')}
+                id="research-progress-section-header"
               >
                 <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('feedback') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                    : getSectionStatus('feedback') === 'completed'
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                      : 'bg-gray-200 text-gray-500'
-                    }`}>
-                    2
+                  <div
+                    className={`${completedStages.includes('researching')
+                      ? 'bg-green-500'
+                      : activeStage === 'researching' || activeStage === 'generating-report'
+                        ? 'bg-blue-500'
+                        : 'bg-gray-300'
+                      } h-5 w-5 rounded-full mr-3 transition-colors duration-200 flex items-center justify-center text-white text-xs`}
+                  >
+                    {completedStages.includes('researching') ? '✓' : '3'}
                   </div>
-                  <h2 className="text-lg font-semibold text-gray-900">{t('sections.feedback')}</h2>
+                  <h2 className="text-lg font-semibold text-gray-800">{t('sections.researching')}</h2>
                 </div>
-                <div className="flex items-center">
-                  {getSectionStatus('feedback') === 'completed' && (
-                    <span className="text-sm font-medium text-green-600 mr-3">Completed</span>
-                  )}
-                  {getSectionStatus('feedback') !== 'pending' && (
-                    expandedSections.feedback ? (
-                      <ChevronUpIcon className="h-5 w-5 text-gray-500" />
-                    ) : (
-                      <ChevronDownIcon className="h-5 w-5 text-gray-500" />
-                    )
-                  )}
-                </div>
+                {expandedSections.researching ? (
+                  <ChevronUpIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+                ) : (
+                  <ChevronDownIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+                )}
               </div>
-
-              <div className={`transition-all duration-300 ease-in-out ${expandedSections.feedback && getSectionStatus('feedback') !== 'pending'
-                ? 'opacity-100'
-                : 'max-h-0 opacity-0 overflow-hidden'
-                }`}>
-                <div className="p-6 border-t border-gray-100">
-                  <FeedbackQuestions
-                    questions={questions}
-                    onSubmit={handleFeedbackSubmit}
-                    isLoading={isLoading}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Research Section */}
-            <div className={`bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-lg relative z-10 ${getSectionStatus('researching') === 'pending' ? 'opacity-70' : ''
-              }`}>
-              <div
-                className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('researching') === 'active'
-                  ? 'bg-gradient-to-r from-indigo-50 to-purple-50'
-                  : getSectionStatus('researching') === 'completed'
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50'
-                    : 'bg-gray-50'
-                  }`}
-                onClick={getSectionStatus('researching') !== 'pending' ? toggleSection('researching') : undefined}
-                role="button"
-                tabIndex={getSectionStatus('researching') !== 'pending' ? 0 : -1}
-                onKeyDown={(e) => {
-                  if (getSectionStatus('researching') !== 'pending' && (e.key === 'Enter' || e.key === ' ')) {
-                    e.preventDefault();
-                    toggleSection('researching')(e as unknown as MouseEvent<HTMLDivElement>);
-                  }
-                }}
-              >
-                <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('researching') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                    : getSectionStatus('researching') === 'completed'
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                      : 'bg-gray-200 text-gray-500'
-                    }`}>
-                    3
-                  </div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    {activeStage === 'generating-report' ? t('sections.researching') + ' & ' + t('sections.report') : t('sections.researching')}
-                  </h2>
-                </div>
-                <div className="flex items-center">
-                  {getSectionStatus('researching') === 'completed' && (
-                    <span className="text-sm font-medium text-green-600 mr-3">Completed</span>
-                  )}
-                  {getSectionStatus('researching') !== 'pending' && (
-                    expandedSections.researching ? (
-                      <ChevronUpIcon className="h-5 w-5 text-gray-500" />
-                    ) : (
-                      <ChevronDownIcon className="h-5 w-5 text-gray-500" />
-                    )
-                  )}
-                </div>
-              </div>
-
-              <div className={`transition-all duration-300 ease-in-out ${expandedSections.researching && getSectionStatus('researching') !== 'pending'
-                ? 'opacity-100'
-                : 'max-h-0 opacity-0 overflow-hidden'
-                }`}>
-                <div className="p-6 border-t border-gray-100">
-                  {activeStage === 'generating-report' ? (
-                    <div className="py-8">
-                      <h2 className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 mb-8">
-                        {t('researchProgress.generatingReport')}
-                      </h2>
-
-                      <div className="mb-10 max-w-2xl mx-auto">
-                        <div className="flex justify-between mb-2">
-                          <span className="text-sm font-medium text-gray-700">{t('researchProgress.insights')}</span>
-                          <span className="sr-only">{reportProgress}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                          <div
-                            className="h-2.5 rounded-full animate-progress-infinite bg-gradient-to-r from-indigo-500 to-purple-600"
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-center mb-8">
-                        <div className="w-16 h-16 relative">
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 animate-pulse opacity-30"></div>
-                          <div className="absolute inset-0 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <SparklesIcon className="h-6 w-6 text-indigo-600" />
-                          </div>
-                        </div>
-                      </div>
-
-                      <p className="text-center text-gray-600 max-w-md mx-auto">
-                        {t('researchProgress.generatingReport')}
-                      </p>
-                    </div>
-                  ) : (
-                    <ResearchProgress
-                      query={query}
-                      researchSteps={researchSteps}
-                      researchStartTime={researchStartTime}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Report Section */}
-            <div className={`bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-lg relative z-10 ${getSectionStatus('report') === 'pending' ? 'opacity-70' : ''
-              }`}>
-              <div
-                className={`p-5 flex justify-between items-center cursor-pointer ${getSectionStatus('report') === 'active'
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                  : getSectionStatus('report') === 'completed'
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                    : 'bg-gray-50'
-                  }`}
-                onClick={(getSectionStatus('report') === 'completed' || getSectionStatus('report') === 'active') ? toggleSection('report') : undefined}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleSection('report')(e as unknown as MouseEvent<HTMLDivElement>);
-                  }
-                }}
-              >
-                <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 transition-all duration-300 ${getSectionStatus('report') === 'active'
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
-                    : getSectionStatus('report') === 'completed'
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md'
-                      : 'bg-gray-200 text-gray-500'
-                    }`}>
-                    4
-                  </div>
-                  <h2 className="text-lg font-semibold text-gray-900">{t('sections.report')}</h2>
-                </div>
-                <div className="flex items-center">
-                  {getSectionStatus('report') === 'completed' && (
-                    <span className="text-sm font-medium text-green-600 mr-3">Completed</span>
-                  )}
-                  {expandedSections.report ? (
-                    <ChevronUpIcon className="h-5 w-5 text-gray-500" />
-                  ) : (
-                    <ChevronDownIcon className="h-5 w-5 text-gray-500" />
-                  )}
-                </div>
-              </div>
-
-              <div className={`transition-all duration-300 ease-in-out ${expandedSections.report ? 'opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
-                }`}>
-                <div className="p-6 border-t border-gray-100">
-                  <ResearchReport
-                    report={report}
+              {expandedSections.researching && (
+                <div className="p-6" id="research-progress-section-content">
+                  <ResearchProgress
+                    query={query}
                     researchSteps={researchSteps}
                     researchStartTime={researchStartTime}
-                    researchDuration={researchDuration}
-                    researchLearnings={researchLearnings}
-                    sourceUrls={sourceUrls}
-                    enhancedQueryText={enhancedQueryText}
                   />
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+              )}
+            </section>
+          )}
 
-        {/* AI Disclaimer */}
-        <div className="max-w-4xl lg:max-w-5xl mx-auto mt-12">
-          <AiDisclaimer />
+          {/* Research Report Section */}
+          {(activeStage === 'report' || completedStages.includes('report')) && (
+            <section id="report-section" className="rounded-xl border border-gray-200 shadow-sm overflow-hidden bg-white">
+              <div
+                className="p-4 cursor-pointer bg-gray-50 border-b border-gray-200 flex justify-between items-center"
+                onClick={toggleSection('report')}
+                id="report-section-header"
+              >
+                <div className="flex items-center">
+                  <div
+                    className={`${completedStages.includes('report') ? 'bg-green-500' : activeStage === 'report' ? 'bg-blue-500' : 'bg-gray-300'
+                      } h-5 w-5 rounded-full mr-3 transition-colors duration-200 flex items-center justify-center text-white text-xs`}
+                  >
+                    {completedStages.includes('report') ? '✓' : '4'}
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-800">{t('sections.report')}</h2>
+                </div>
+                {expandedSections.report ? (
+                  <ChevronUpIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+                ) : (
+                  <ChevronDownIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+                )}
+              </div>
+              {expandedSections.report && (
+                <div className="p-6" id="report-section-content">
+                  <ResearchReport
+                    report={report}
+                    sourceUrls={sourceUrls}
+                    onNewResearch={startNewResearch}
+                    researchDuration={researchDuration}
+                    researchLearnings={researchLearnings}
+                  />
+
+                  <div className="mt-12" id="ai-disclaimer-container">
+                    <AiDisclaimer />
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
         </div>
       </main>
     </div>

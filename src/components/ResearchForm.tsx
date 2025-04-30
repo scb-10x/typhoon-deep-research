@@ -23,12 +23,12 @@ export default function ResearchForm({ onSubmit, isLoading }: ResearchFormProps)
   };
 
   return (
-    <div>
+    <div id="research-form-container">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         {t('researchForm.placeholder')}
       </h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} id="research-query-form">
         <div className="mb-6">
           <label
             htmlFor="query"
@@ -49,12 +49,13 @@ export default function ResearchForm({ onSubmit, isLoading }: ResearchFormProps)
           <p className="mt-2 text-sm font-medium text-gray-700">
             {t('researchForm.examples')}
           </p>
-          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3" id="example-queries-container">
             {exampleQueries.map((example, index) => (
               <div
                 key={index}
                 className="p-3 bg-gray-50 rounded-lg text-sm text-gray-700 cursor-pointer hover:bg-indigo-50 hover:text-indigo-700 transition-colors border border-gray-200 shadow-sm flex items-center"
                 onClick={() => setQuery(example)}
+                id={`example-query-${index}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -76,10 +77,11 @@ export default function ResearchForm({ onSubmit, isLoading }: ResearchFormProps)
             type="submit"
             disabled={isLoading || !query.trim()}
             className={`px-6 py-3 rounded-lg text-white font-medium ${isLoading || !query.trim()
-                ? 'bg-indigo-400 cursor-not-allowed'
-                : 'bg-indigo-600 hover:bg-indigo-700'
+              ? 'bg-indigo-400 cursor-not-allowed'
+              : 'bg-indigo-600 hover:bg-indigo-700'
               } transition-colors duration-200 flex items-center`}
             aria-disabled={isLoading || !query.trim()}
+            id="research-submit-button"
           >
             {isLoading ? (
               <>

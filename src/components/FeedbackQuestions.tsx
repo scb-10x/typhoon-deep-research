@@ -37,7 +37,7 @@ export default function FeedbackQuestions({
   const isFormComplete = Object.values(responses).every(response => response.trim() !== '');
 
   return (
-    <div>
+    <div id="feedback-questions-container">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
         {t('feedbackQuestions.title')}
       </h2>
@@ -46,9 +46,9 @@ export default function FeedbackQuestions({
         {t('feedbackQuestions.subtitle')}
       </p>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} id="feedback-questions-form">
         {questions.map((question, index) => (
-          <div key={index} className="mb-6">
+          <div key={index} className="mb-6" id={`feedback-question-container-${index}`}>
             <label
               htmlFor={`question-${index}`}
               className="block text-sm font-medium text-gray-700 mb-2"
@@ -73,10 +73,11 @@ export default function FeedbackQuestions({
             type="submit"
             disabled={isLoading || !isFormComplete}
             className={`px-6 py-3 rounded-lg text-white font-medium ${isLoading || !isFormComplete
-                ? 'bg-indigo-400 cursor-not-allowed'
-                : 'bg-indigo-600 hover:bg-indigo-700'
+              ? 'bg-indigo-400 cursor-not-allowed'
+              : 'bg-indigo-600 hover:bg-indigo-700'
               } transition-colors duration-200 flex items-center`}
             aria-disabled={isLoading || !isFormComplete}
+            id="feedback-submit-button"
           >
             {isLoading ? (
               <>
