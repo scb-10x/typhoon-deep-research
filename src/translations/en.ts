@@ -1,7 +1,7 @@
 /**
  * English translations
  */
-export default {
+export const en = {
   common: {
     language: 'English',
     switchLanguage: 'Switch language',
@@ -79,4 +79,6 @@ export default {
     researching: 'Research Progress',
     report: 'Research Report',
   },
-} 
+}
+
+export default en;

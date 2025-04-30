@@ -1,7 +1,7 @@
 /**
  * Thai translations
  */
-export default {
+export const th = {
   common: {
     language: 'ภาษาไทย',
     switchLanguage: 'เปลี่ยนภาษา',
@@ -79,4 +79,6 @@ export default {
     researching: 'ความคืบหน้าการวิจัย',
     report: 'รายงานการวิจัย',
   },
-} 
+}
+
+export default th;

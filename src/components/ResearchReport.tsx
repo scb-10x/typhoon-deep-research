@@ -682,6 +682,7 @@ export default function ResearchReport({
                       <div className="my-8 flex justify-center">
                         <img
                           className="max-w-full h-auto rounded-lg shadow-lg"
+                          alt={props.alt || "Image"}
                           {...props}
                         />
                       </div>

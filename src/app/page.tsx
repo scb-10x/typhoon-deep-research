@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import type { MouseEvent } from 'react';
-import { ChevronDownIcon, ChevronUpIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import ResearchForm from '@/components/ResearchForm';
 import FeedbackQuestions from '@/components/FeedbackQuestions';
 import ResearchProgress from '@/components/ResearchProgress';
@@ -31,10 +31,12 @@ export default function HomePage() {
   const [report, setReport] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [researchSteps, setResearchSteps] = useState<ResearchStep[]>([]);
-  const [reportProgress, setReportProgress] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setReportProgress] = useState(0);
   const [researchLearnings, setResearchLearnings] = useState<Learning[]>([]);
   const [sourceUrls, setSourceUrls] = useState<Record<string, string>>({});
-  const [enhancedQueryText, setEnhancedQueryText] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [__, setEnhancedQueryText] = useState('');
   const [detectedLanguage, setDetectedLanguage] = useState<string>('en');
   const [researchDuration, setResearchDuration] = useState<number | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -246,14 +248,6 @@ ${Object.entries(responses)
       researching: false,
       report: false
     });
-  };
-
-  // Helper function to determine section status
-  const getSectionStatus = (stage: ResearchStage) => {
-    if (activeStage === stage) return 'active';
-    if (activeStage === 'generating-report' && stage === 'researching') return 'active';
-    if (completedStages.includes(stage)) return 'completed';
-    return 'pending';
   };
 
   return (
