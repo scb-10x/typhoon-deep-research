@@ -44,6 +44,7 @@ export default function Navigation() {
             <Image src="/images/logo.svg" alt="Typhoon Logo" width={32} height={32} className="mr-3" id="nav-logo-image" />
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">Typhoon</span>
             <span className="text-2xl font-bold text-gray-800 ml-2">Deep Research</span>
+            <div className="bg-yellow-400 text-xs font-semibold px-2 py-0.5 rounded text-yellow-800 ml-2">DEMO</div>
           </Link>
         </div>
 
