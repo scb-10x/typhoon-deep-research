@@ -32,7 +32,7 @@ return text.trim();
  */
 export function extractResultFromThinking(text: string): string {
   let result = text;
-  
+
   // Check if the response contains <think> tags
   const thinkMatch = result.match(/<think>([\s\S]*?)<\/think>([\s\S]*)/);
   

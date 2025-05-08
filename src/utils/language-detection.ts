@@ -29,17 +29,6 @@ export const languageCodeToName: Record<string, string> = {
 export const languagePatterns: Record<string, RegExp[]> = {
   'th': [/[\u0E00-\u0E7F]/], // Thai - prioritized
   'en': [/^[a-zA-Z0-9\s.,?!;:'"\-()]+$/], // English (default)
-  'es': [/¿|á|é|í|ó|ú|ñ|¡/], // Spanish
-  'fr': [/ç|à|â|é|è|ê|ë|î|ï|ô|œ|ù|û|ü|ÿ/], // French
-  'de': [/ä|ö|ü|ß/], // German
-  'it': [/à|è|é|ì|ò|ù/], // Italian
-  'pt': [/ã|õ|á|é|í|ó|ú|â|ê|ô|ç/], // Portuguese
-  'ja': [/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/], // Japanese
-  'zh': [/[\u4e00-\u9fff\u3400-\u4dbf\u20000-\u2a6df\u2a700-\u2b73f\u2b740-\u2b81f\u2b820-\u2ceaf]/], // Chinese
-  'ko': [/[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f\ua960-\ua97f\ud7b0-\ud7ff]/], // Korean
-  'ru': [/[\u0400-\u04FF]/], // Russian
-  'ar': [/[\u0600-\u06FF]/], // Arabic
-  'hi': [/[\u0900-\u097F]/], // Hindi
 };
 
 /**
